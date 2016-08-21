@@ -1,0 +1,35 @@
+`timescale 1ns / 100ps
+
+module test ();
+
+  reg clk;
+  reg reset_;
+  wire led;
+
+  blinker blinker_0 (
+    .clk(clk),
+    .reset_(reset_),
+    .led(led)
+  );
+
+  initial begin
+    reset_ = 1'b0;
+    #100
+    reset_ = 1'b1;
+  end
+
+  initial begin
+ 	  clk = 1'b0;
+    #500000500 $finish;
+  end
+
+  initial begin forever
+	  #31.25 clk = ~clk;
+	end
+
+  initial begin
+	  $dumpfile("counter_wave.vcd");
+	  $dumpvars();
+  end
+
+endmodule
