@@ -28,4 +28,4 @@ CONFIG PROHIBIT=P60;
 
 NET CLK            LOC="P94"  | IOSTANDARD=LVTTL | PERIOD=31.25ns;               # CLK
 NET RESET_         LOC="P114" | IOSTANDARD=LVTTL;                                # C0 (used as reset)
-NET LED1           LOC="P112" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED1
+NET LED            LOC="P112" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED1
