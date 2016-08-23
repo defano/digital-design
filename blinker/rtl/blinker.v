@@ -8,16 +8,17 @@ input   clk;
 input   reset_;
 output  led;
 
-parameter LED_BLINK_PERIOD = 24'h3cf008;
+// 250ms period: approx 3,993,608 32Mhz clock cycles per 250ms
+parameter LED_BLINK_PERIOD = 22'd3993608;
 
-reg [23:0]  clk_div;
+reg [21:0]  clk_div;
 reg         led;
 
 always@ (posedge clk or negedge reset_)
   if (!reset_)
-    clk_div <= 24'h000000;
+    clk_div <= 22'h000000;
   else if (clk_div == LED_BLINK_PERIOD)
-    clk_div <= 24'h000000;
+    clk_div <= 22'h000000;
   else
     clk_div <= clk_div + 1;
 

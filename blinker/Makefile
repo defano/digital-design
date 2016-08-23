@@ -1,7 +1,3 @@
-YOSYS    := $(shell command -v yosys 2> /dev/null)
-IVERILOG := $(shell command -v iverilog 2> /dev/null)
-VVP      := $(shell command -v vvp 2> /dev/null)
-
 all: simulate
 
 compile: iverlog_installed rtl/blinker.v test/testbench.vt
@@ -10,11 +6,19 @@ compile: iverlog_installed rtl/blinker.v test/testbench.vt
 simulate: vvp_installed compile
 	vvp gen/testbench
 
-synthesize:
+synthesize: yosys_installed
 	yosys -s syn/synthesize.ys
+
+fpga: papilio_installed papilio/blinker.bit
+	sudo papilio-prog -v -f papilio/blinker.bit
 
 clean:
 	rm -f *.vcd gen/* diagram.* blinker_netlist.v
+
+YOSYS    := $(shell command -v yosys 2> /dev/null)
+IVERILOG := $(shell command -v iverilog 2> /dev/null)
+VVP      := $(shell command -v vvp 2> /dev/null)
+PAPILIO	 := $(shell command -v papilio-prog 2> /dev/null)
 
 yosys_installed:
 ifndef YOSYS
@@ -29,4 +33,9 @@ endif
 vvp_installed:
 ifndef VVP
 	$(error "VVP Verilog simulation environment is not installed; try 'brew install icarus-verilog'.")
+endif
+
+papilio_installed:
+ifndef PAPILIO
+	$(error "Papilio programmer (papilio-prog) is not installed.")
 endif
