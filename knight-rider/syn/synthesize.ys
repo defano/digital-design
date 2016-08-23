@@ -1,6 +1,6 @@
 # Read design
-read_verilog rtl/blinker.v
-hierarchy -check -top blinker
+read_verilog rtl/knight-rider.v
+hierarchy -check -top knightrider
 
 # Map processes (sequential logic) and optimize
 proc; opt;
@@ -29,4 +29,4 @@ clean
 show -format svg -prefix diagram
 
 # Write synthesized design output
-write_verilog blinker_netlist.v
+write_verilog knight-rider.netlist.v

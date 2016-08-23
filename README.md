@@ -6,9 +6,13 @@ These examples will conclude by realizing the designs on the Papilio FPGA develo
 
 Project | Description
 --------|---------------------------
-[blinker](blinker/) | A "hello world" project that does nothing but blink the Papilio Pro's onboard LED. This is a good starting point for testing your toolchain and hardware.
+[knight-rider](knight-rider/) | A "hello world" project that does nothing but cycle the Papilio LogicStart Megawing's eight LEDs in a pattern reminiscent of Kit from the 80s TV show Knight Rider. This is a good starting point for testing your toolchain and hardware.
 
-## Hardware (Optional)
+# Setup
+
+This section describes the software and optional hardware that will be used in this tutorial.
+
+## Hardware
 
 This project makes use of the Papilio Pro and Papilio LogicStart Megawing development boards. These can be purchased as a kit [for about $100.00 online, here](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/). The Papilio Pro contains a Spartan 6 Xilinx FPGA which will accept our circuit designs; the LogicStart Megawing provides various IOs (buttons, LEDs and seven segment displays) to experiment with.
 
@@ -16,11 +20,11 @@ A detailed description of the Papilio Pro hardware [can be found here](http://pa
 
 ## Software
 
-These instructions are aimed at 32-bit Ubuntu Linux users (specifically i386 Ubuntu 16.04 Desktop). Other 32-bit versions of Linux should work equally well, but careful with 64-bit as noted below. Ubuntu can be virtualized on Mac OS X or Windows through use of VirtualBox (or other, commercial, virtualization tools).
+These instructions are aimed at 32-bit Ubuntu Linux users (specifically i386 Ubuntu 16.04 Desktop). Other 32-bit versions of Linux should work equally well, but careful with 64-bit as noted below. Ubuntu can be virtualized on Mac OS X or Windows through use of VirtualBox (or other, commercial, virtualization tools). These instructions have been tested on a virtualized Ubuntu instance running on a MacBook Pro using Mac OS X El Capitan (v10.11).
 
 Where possible, I have included installation instructions for Mac OS X, too. All of the design entry and simulation tools will run on Windows, Linux and Mac OS. Ubuntu or Windows is required only when working with the Papilio/Xilinx hardware.  
 
-Note that I have had several problems getting the Papilio software to run correctly on 64-bit versions of Ubuntu. **If you plan on using the Papilio hardware and toolset, I recommend using the i386 versions of Ubuntu.** Since this is the not the standard Ubuntu installation, you'll need dig around a bit to find the i386 ISO. I used [this one](http://mirror.pnl.gov/releases/xenial/ubuntu-16.04.1-desktop-i386.iso).
+Note that I have had issues getting the Papilio software to run correctly on 64-bit versions of Ubuntu. **If you plan on using the Papilio hardware and toolset, I recommend using an i386 version of Ubuntu.** Since this is the not the standard Ubuntu installation, you'll need dig around a bit to find the i386 ISO. I used [this one](http://mirror.pnl.gov/releases/xenial/ubuntu-16.04.1-desktop-i386.iso).
 
 ### Icarus Verilog
 
@@ -66,17 +70,17 @@ $ brew install yosys
 
 _What's it do?_ Synthesizes Verilog into a format that can be loaded onto the Papilio's Spartan FPGA.
 
-Useful only if targeting these examples towards the Papilio FPGA board. This software is not needed for design entry or simulation.
+Useful only if targeting these examples towards the Papilio FPGA board. Not required for those without a Papilio or other Xilinx-based development board.
 
 Note that ISE was EOL'd in 2013 and is no longer supported. It is nonetheless required for designs targeting the older Spartan-family of FPGAs found on the Papilio hardware.
 
 Xilinx makes WebPack available at no cost but the installation process can be non-trivial. Xilinx requires you to register on their website before downloading the software and also to generate and install a license file before using it. Plus, on Linux, you'll need to tweak the installation to prevent library conflicts with modern distributions (a side effect of the software's age and lack of support). Xilinx does not offer a Mac OS X version of the code.
 
-**1. Download**
+#### 1. Download
 
 Download the most recent version of the ISE Design tools (full product installation, _all 6 GBs_ of it) from Xilinx's site (version 14.7). [For Linux, here](https://survey.xilinx.com/ss/wsb.dll/Xilinx/ISE_Download_Survey.htm?wsb5=14.7&wsb6=1&wsb7=Xilinx_ISE_DS_Lin_14.7_1015_1.tar) and [for Windows, here](https://survey.xilinx.com/ss/wsb.dll/Xilinx/ISE_Download_Survey.htm?wsb5=14.7&wsb6=1&wsb7=Xilinx_ISE_DS_Win_14.7_1015_1.tar). Note that you will have to fill out a survey and accept EULA terms to download.
 
-**2. Install**
+#### 2. Install
 
 Windows users can execute the installer tool; Linux users should follow the instructions below:
 
@@ -84,22 +88,22 @@ Windows users can execute the installer tool; Linux users should follow the inst
   2. When prompted for which suite of tools to install, choose **ISE WebPack** (not the default selection)
   3. Allow tools to be installed into the (default) `/opt/Xilinx` directory.
 
-**3. Fix the libraries**
+#### 3. Fix the libraries
 
 Disable obsolete versions of the C standard library to prevent issues with other tools (this will be required to get a license in the next section):
 
 ```
-sudo mv common/lib/lin/libstdc++.so common/lib/lin/libstdc++.so.disable
-sudo mv common/lib/lin/libstdc++.so.6 common/lib/lin/libstdc++.so.6.disable
-sudo mv common/lib/lin/libstdc++.so.6.0.8 common/lib/lin/libstdc++.so.6.0.8.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.0.8.disable
 
-# Ignore these for Fedora FEL distributions
-sudo mv ISE/lib/lin/libstdc++.so ISE/lib/lin/libstdc++.so.disable
-sudo mv ISE/lib/lin/libstdc++.so.6 ISE/lib/lin/libstdc++.so.6.disable
-sudo mv ISE/lib/lin/libstdc++.so.6.0.8 ISE/lib/lin/libstdc++.so.6.0.8.disable
+# Ignore these on Fedora
+sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.0.8.disable
 ```
 
-**4. Fire it up**
+#### 4. Fire it up
 
 As noted in the installation wizard, you must source a shell script (to configure environmental variables and whatnot) prior to running ISE WebPack.
 
@@ -117,13 +121,13 @@ $ /opt/Xilinx/14.7/ISE_DS/ISE/bin/lin/ise
 
 Do not run ISE as superuser (various functions will not work).
 
-I find it convenient to combine both steps into an `ise` alias. Bash shell users can accomplish this by adding the following to their `~/.bashrc` file:
+I find it convenient to combine both steps into an `ise` alias. Bash shell users can accomplish this by appending the following to their `~/.bashrc` file:
 
 ```
-alias ise='source /opt/Xilinx/14.7/ISE_DS/settings64.sh;/opt/Xilinx/14.7/ISE_DS/ISE/bin/lin64/ise'
+alias ise='source /opt/Xilinx/14.7/ISE_DS/settings32.sh;/opt/Xilinx/14.7/ISE_DS/ISE/bin/lin/ise'
 ```
 
-**4. Get a license**
+#### 5. Get a license
 
 The first time you run ISE you'll be prompted to install a feature license. Follow the dialog prompt to open the Xilinx License Configuration Manager or choose "Manage License..." from the ISE "Help" menu and follow these instructions:
 
@@ -141,7 +145,7 @@ _What's it do?_ Loads the Xilinx-synthesized designs (created using ISE WebPack)
 
 The Papilio loader replaces standard JTAG device programming tools (providing a less expensive, more user friendly approach to FPGA development). The most reliable way to install this software on Linux is to clone its Git repository and run the installer script.
 
-The Papilio Loader requires Java and a USB device driver to operatre, plus we'll be using Git to fetch the Papilio software. Install these dependent packages first:
+The Papilio Loader requires Java and a USB device driver to operate, plus we'll be using Git to fetch it. Install these dependent packages first:
 
 ```
 $ sudo apt update
@@ -162,4 +166,18 @@ $ cd Papilio-Loader/
 $ ./linux-installer.sh
 ```
 
-The installer script will load various application components in the `/opt/GadgetFactory/` directory and place links to the `papilio-loader-gui` in `/usr/local/bin/`
+The installer script will load various application components in the `/opt/GadgetFactory/` directory and place links to the `papilio-loader-gui` and `papilio-prog` in `/usr/local/bin/`
+
+# Simulate
+
+Verilog is somewhat unusual in that the language is comprised of two subsets: constructs which are synthesizable into physical hardware and constructs which are not. For example, `$display("hello world!");` is perfectly legal Verilog, but what would a corresponding integrated circuit look like? (Might it incorporate some teensy tiny display inside the chip? And if it did, which font would be used to print the message?)
+
+# Synthesize
+
+Synthesis is the process of converting Verliog HDL to a circuit comprised of logic gates, flip-flops and the wired connections (_nets_) between them. This is analogous to _compiling_ in software; the process of transforming a high-level programming language into machine-specific instructions.
+
+### For ASICs and demonstration
+
+### For Xilinx FPGAs
+
+# Run

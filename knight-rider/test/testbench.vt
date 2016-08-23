@@ -4,9 +4,9 @@ module test ();
 
   reg clk;
   reg reset_;
-  wire led;
+  wire [7:0] led;
 
-  blinker blinker_0 (
+  knightrider knightrider_0 (
     .clk(clk),
     .reset_(reset_),
     .led(led)
@@ -28,7 +28,7 @@ module test ();
 	end
 
   initial begin
-	  $dumpfile("counter_wave.vcd");
+	  $dumpfile("waveform.vcd");
 	  $dumpvars();
   end
 
