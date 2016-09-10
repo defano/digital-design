@@ -1,0 +1,30 @@
+# Read design
+read_verilog rtl/seven-segment.v rtl/bcd-coder.v rtl/display-driver.v
+hierarchy -check -top sevensegment
+
+# Map processes (sequential logic) and optimize
+proc; opt;
+
+# Map finite state machines and optimize
+fsm; opt;
+
+# Convert memories to DFFs and optimize
+memory; opt
+
+# Convert logic to technology library (cells)
+techmap; opt
+
+# Prepare mapping flip-flops to osu025_stdcells
+dfflibmap -prepare -liberty ../cells/osu025_stdcells.lib
+
+# Map combinatorial logic to cmos_cells
+abc -liberty ../cells/cmos_cells.lib
+
+# Map flip-flops (sequential logic) to osu025_stdcells
+dfflibmap -liberty ../cells/osu025_stdcells.lib
+
+# Eliminate unused nets and logic
+clean
+
+# Write synthesized design output
+write_verilog seven-segment.netlist.v

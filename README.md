@@ -7,6 +7,7 @@ These examples will conclude by realizing the designs on the Papilio FPGA develo
 Project | Description
 --------|---------------------------
 [knight-rider](knight-rider/) | A "hello world" project that does nothing but cycle the Papilio LogicStart Megawing's eight LEDs in a pattern reminiscent of Kit from the 80s TV show Knight Rider. This is a good starting point for testing your toolchain and hardware.
+[seven-segment-counter](seven-segment-counter/) | A slightly more complicated project that drives all four seven-segment digits on the LogicStart with a rapidly incrementing base-10 count.
 
 # Setup
 
@@ -16,7 +17,7 @@ This section describes the software and optional hardware that will be used in t
 
 This project makes use of the Papilio Pro and Papilio LogicStart Megawing development boards. These can be purchased as a kit [for about $100.00 online, here](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/). The Papilio Pro contains a Spartan 6 Xilinx FPGA which will accept our circuit designs; the LogicStart Megawing provides various IOs (buttons, LEDs and seven segment displays) to experiment with.
 
-A detailed description of the Papilio Pro hardware [can be found here](http://papilio.cc/index.php?n=Papilio.PapilioPro); the [LogicStart Megawing, here](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing).
+A detailed description of the [Papilio Pro hardware can be found here](http://papilio.cc/index.php?n=Papilio.PapilioPro); the [LogicStart Megawing, here](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing).
 
 ## Software
 
@@ -61,6 +62,12 @@ $ brew install gtkwave
 
 _What's it do?_ Synthesizes Verilog hardware designs from _RTL_ into a gate-level netlist. (This is for demonstration only; Xilinx WebPACK will be utilized to synthesize our design to the Papilio board.)
 
+On Ubuntu:
+```
+$ sudo apt install yosys
+```
+
+On Mac OS X:
 ```
 $ brew tap bsmt/homebrew-tap
 $ brew install yosys
@@ -167,17 +174,3 @@ $ ./linux-installer.sh
 ```
 
 The installer script will load various application components in the `/opt/GadgetFactory/` directory and place links to the `papilio-loader-gui` and `papilio-prog` in `/usr/local/bin/`
-
-# Simulate
-
-Verilog is somewhat unusual in that the language is comprised of two subsets: constructs which are synthesizable into physical hardware and constructs which are not. For example, `$display("hello world!");` is perfectly legal Verilog, but what would a corresponding integrated circuit look like? (Might it incorporate some teensy tiny display inside the chip? And if it did, which font would be used to print the message?)
-
-# Synthesize
-
-Synthesis is the process of converting Verliog HDL to a circuit comprised of logic gates, flip-flops and the wired connections (_nets_) between them. This is analogous to _compiling_ in software; the process of transforming a high-level programming language into machine-specific instructions.
-
-### For ASICs and demonstration
-
-### For Xilinx FPGAs
-
-# Run

@@ -8,13 +8,15 @@ module testbench ();
 
   reg clk;
   reg reset_;
-  wire [7:0] led;
+  wire [6:0] segments;
+  wire [3:0] enables;
 
   // Create an instance of the circuit under test
-  knightrider knightrider_0 (
+  sevensegment sevensegment_0 (
     .clk(clk),
     .reset_(reset_),
-    .led(led)
+    .segment_(segments),
+    .digit_enable_(enables)
   );
 
   // Initialize the clock signal to zero; drive reset_ active (low) for the
@@ -25,11 +27,11 @@ module testbench ();
     #100 reset_ = 1'b1;
   end
 
-  // Stop the simulation after 500ms; note that simulations can run indefinitely
+  // Stop the simulation after 400ms; note that simulations can run indefinitely
   // (with waveforms loaded incrementally in the viewer.) Press ctrl-c to break
   // iverilog, then enter '$finish' to stop the simulation.
   initial begin
-    #500000000 $finish;
+    #400000000 $finish;   // 400ms
   end
 
   // Toggle the clock every 31.25ns (32 MHz frequency)

@@ -7,39 +7,53 @@ module knightrider (
    input   reset_;
    output  [7:0] led;
 
-   // 250ms period: approx 3,993,608 32Mhz clock cycles per 250ms
-   parameter LED_BLINK_PERIOD = 22'd3993608;
+   // Goal is to change LED pattern roughly every 250ms. The Papilio Pro
+   // clock runs at 32 MHz (32.25 ns period). If we increment a 21 bit counter
+   // on each clock cycle, it will roll over approximately each quarter second.
+   // (Arithmetic left to the interested student.)
+   reg [20:0] count;
 
-   reg [21:0] clk_div;
-   reg [7:0] led;
-   reg 	    left_shift;
+   // Board has eight LEDs; this vector represents the state of each LED. A one
+   // in the corresponding bit turns the LED on; a zero turns it off.
+   reg [7:0]  led;
 
-   wire     shift;
+   // A single bit indication of whether the LED animation is moving right
+   // to left. (Once the active LED is in the left-most position, we clear this
+   // value to signal we should start shifting right.)
+   reg         left_shift;
 
-   assign shift = clk_div == LED_BLINK_PERIOD;
+   // Change the LED pattern each time our counter rolls over. The shift signal
+   // will go high (1'b1) only for the single clock cycle where the counter is
+   // maxed out. This is combinitorial logic; the value is continuously updated.
+   assign shift = count == 21'h1FFFFF;
 
+   // Increment the counter at each clock tick; set counter to 0 on reset.
    always@ (posedge clk or negedge reset_)
      if (!reset_)
-       clk_div <= 22'h000000;
-     else if (clk_div == LED_BLINK_PERIOD)
-       clk_div <= 22'h000000;
+       count <= 21'h0;
      else
-       clk_div <= clk_div + 1;
+       count <= count + 1;
 
+   // Shift the state of the LEDs each time the 'shift' signal is high (should
+   // be the case only one clock cycle per ~250ms). LED state has one bit set,
+   // the remaining seven cleared.
    always@ (posedge clk or negedge reset_)
      if (!reset_)
-       left_shift <= 1'b1;
+       led[7:0] <= 8'b1000_0000;
+     else if (shift && left_shift)    // Move 'on' LED left one position
+       led[7:0] <= led[7:0] << 1;
+     else if (shift)                  // Move right
+       led[7:0] <= led[7:0] >> 1;
+
+   // Track whether we're moving left or right. When the 'on' LED reaches the
+   // left-most position, clear this value. When it reaches the right-most
+   // position, set it.
+   always@ (posedge clk or negedge reset_)
+     if (!reset_)
+       left_shift <= 1'b0;
      else if (led[7:0] == 8'b1000_0000)
        left_shift <= 1'b0;
      else if (led[7:0] == 8'b0000_0001)
        left_shift <= 1'b1;
-
-   always@ (posedge clk or negedge reset_)
-     if (!reset_)
-       led[7:0] <= 8'b1000_0000;
-     else if (shift && left_shift)
-       led[7:0] <= led[7:0] << 1;
-     else if (shift && !left_shift)
-       led[7:0] <= led[7:0] >> 1;
 
 endmodule

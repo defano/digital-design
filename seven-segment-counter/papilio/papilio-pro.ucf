@@ -26,13 +26,16 @@ CONFIG PROHIBIT=P144;
 CONFIG PROHIBIT=P69;
 CONFIG PROHIBIT=P60;
 
-NET CLK            LOC="P94"  | IOSTANDARD=LVTTL | PERIOD=31.25ns;               # CLK
-NET RESET_         LOC="P114" | IOSTANDARD=LVTTL;                                # C0 (used as reset)
-NET LED<0>         LOC="P123" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED0
-NET LED<1>         LOC="P124" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED1
-NET LED<2>         LOC="P126" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED2
-NET LED<3>         LOC="P127" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED3
-NET LED<4>         LOC="P131" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED4
-NET LED<5>         LOC="P132" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED5
-NET LED<6>         LOC="P133" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED6
-NET LED<7>         LOC="P134" | IOSTANDARD=LVTTL | DRIVE=8 | SLEW=SLOW;          # LED7
+NET CLK                  LOC="P94"  | IOSTANDARD=LVTTL | PERIOD=31.25ns;               # CLK
+NET digit_enable_(3)     LOC="P48"  | IOSTANDARD=LVTTL;                                # A0
+NET digit_enable_(2)     LOC="P56"  | IOSTANDARD=LVTTL;                                # A2
+NET segment_(4)          LOC="P58"  | IOSTANDARD=LVTTL;                                # A3
+NET segment_(5)          LOC="P61"  | IOSTANDARD=LVTTL;                                # A4
+NET segment_(2)          LOC="P66"  | IOSTANDARD=LVTTL;                                # A5
+NET segment_(3)          LOC="P67"  | IOSTANDARD=LVTTL;                                # A6
+NET segment_(0)          LOC="P75"  | IOSTANDARD=LVTTL;                                # A7
+NET digit_enable_(1)     LOC="P79"  | IOSTANDARD=LVTTL;                                # A8
+NET segment_(6)          LOC="P81"  | IOSTANDARD=LVTTL;                                # A9
+NET segment_(1)          LOC="P83"  | IOSTANDARD=LVTTL;                                # A10
+NET digit_enable_(0)     LOC="P85"  | IOSTANDARD=LVTTL;                                # A11
+NET reset_               LOC="P114" | IOSTANDARD=LVTTL;                                # C0

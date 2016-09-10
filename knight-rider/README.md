@@ -2,6 +2,8 @@
 
 A simple integrated circuit that cycles the  LogicStart MegaWing's eight LEDs back-and-forth in a pattern reminiscent of Kit from Knight Rider.
 
+This is a good place to get started--both as a simple to understand "Hello World" project and also as a known-good example with which to test your Papilio hardware and software toolchain.
+
 ## Makefile
 
 Target       | Description
