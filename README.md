@@ -7,6 +7,7 @@ These examples will conclude by realizing the designs on the Papilio FPGA develo
 Project | Description
 --------|---------------------------
 [knight-rider](knight-rider/) | A "hello world" project that does nothing but cycle the Papilio LogicStart Megawing's eight LEDs in a pattern reminiscent of Kit from the 80s TV show Knight Rider. This is a good starting point for testing your toolchain and hardware.
+[breathing-led](breathing-led/) | Another LED demonstration; drives all the LEDs on the LogicStart MegaWing in a breathing pattern; slowly modulating their brightness from 0 to 100% and back again.
 [seven-segment-counter](seven-segment-counter/) | A slightly more complicated project that drives all four seven-segment digits on the LogicStart with a rapidly incrementing base-10 count.
 
 # Setup
