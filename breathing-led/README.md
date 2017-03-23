@@ -20,6 +20,6 @@ Target       | Description
 
 File | Description
 -----|------------
-[`rtl/seven-segment.v`](rtl/seven-segment.v) | Top-level circuit module; drives LEDs in a breathing pattern.
+[`rtl/breathing-led.v`](rtl/breathing-led.v) | Top-level circuit module; drives LEDs in a breathing pattern.
 [`test/testbench.vt`](test/testbench.vt) | Circuit test bench.
 [`papilio/papilio-pro.ucf`](papilio/papilio-pro.ucf) | User constraints file providing a mapping of logical ports (defined in Verilog) to physical pins on the FPGA.
