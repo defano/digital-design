@@ -18,6 +18,6 @@ Target       | Description
 
 File | Description
 -----|------------
-`rtl/knight-rider.v` | Top-level circuit module; drives eight LEDs in a Knight Rider pattern.
-`test/testbench.vt` | Circuit test bench.
-`papilio/papilio-pro.ucf` | User constraints file providing a mapping of logical ports (defined in Verilog) to physical pins on the FPGA.
+[`rtl/knight-rider.v`](rtl/knight-rider.v) | Top-level circuit module; drives eight LEDs in a Knight Rider pattern.
+[`test/testbench.vt`](test/testbench.vt) | Circuit test bench.
+[`papilio/papilio-pro.ucf`](papilio/papilio-pro.ucf) | User constraints file providing a mapping of logical ports (defined in Verilog) to physical pins on the FPGA.
