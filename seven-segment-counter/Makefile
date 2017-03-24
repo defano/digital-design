@@ -1,14 +1,17 @@
 # Default target runs simulation
 all: simulate
 
+modules = $(wildcard rtl/*.v)
+test = test/testbench.vt
+
 # Removes all derived sources and files
 clean:
 	rm -f *.vcd gen/* diagram.* seven-segment.netlist.v
 
 # Converts Verilog into an intermediate representation that is optimized for
 # simulating.
-compile: iverlog_installed rtl/seven-segment.v rtl/display-driver.v rtl/bcd-coder.v test/testbench.vt
-	iverilog -o gen/testbench test/testbench.vt rtl/seven-segment.v rtl/display-driver.v rtl/bcd-coder.v
+compile: iverlog_installed $(modules) $(test)
+	iverilog -o gen/testbench $(test) $(modules)
 
 # Runs a Verilog simulation of our testbench (and by extension our design)
 simulate: vvp_installed compile
