@@ -2,7 +2,7 @@
 
 A state machine that accepts a user-entered Konami code (that is, pressing up, up, down, down, left, right, left right on the LogicStart's d-pad). Displays state changes and sequence acceptance on the four digit seven-segment display.
 
-For those either too old or too young to remember, this key sequence was used as [a cheat code](https://en.wikipedia.org/wiki/Konami_Code) in Konami's 1987 video game, [Contra](https://en.wikipedia.org/wiki/Contra_(video_game) (for the Nintendo Entertainment System); when a user keyed a similar sequence at startup, they'd be awarded 40 lives.
+For those either too old or too young to remember, this key sequence was used as [a cheat code](https://en.wikipedia.org/wiki/Konami_Code) in Konami's 1987 video game, [Contra](https://en.wikipedia.org/wiki/Contra_(video_game)) (for the Nintendo Entertainment System); when a user keyed a similar sequence at startup, they'd be awarded 40 lives.
 
 This circuit implements a four-bit state register and an edge detector on the d-pad inputs.
 
