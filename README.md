@@ -1,178 +1,29 @@
-# Verilog Tutorial
+# Introduction to Digital Design
 
-This tutorial provides an introduction to simulating and synthesizing digital hardware designs using open-sourced tools and hardware.
-
-These examples will conclude by realizing the designs on the Papilio FPGA development boards (Papilio is to hardware design what Raspberry Pi or Arduino is to embedded computing.) This tutorial consists of several hardware designs which can be synthesized and loaded onto the Papilio hardware:
-
-Project | Description
---------|---------------------------
-[knight-rider](knight-rider/) | A "hello world" project that does nothing but cycle the Papilio LogicStart Megawing's eight LEDs in a pattern reminiscent of Kit from the 80s TV show Knight Rider. This is a good starting point for testing your toolchain and hardware.
-[breathing-led](breathing-led/) | Another LED demonstration; drives all the LEDs on the LogicStart MegaWing in a breathing pattern; slowly modulating their brightness from 0 to 100% and back again.
-[seven-segment-counter](seven-segment-counter/) | A slightly more complicated project that drives all four seven-segment digits on the LogicStart with a rapidly incrementing base-10 count.
-[konami-acceptor](konami-acceptor/) | A simple state machine that listens to d-pad inputs on the LogicStart MegaWing and accepts the sequence up-up-down-down-left-right-left-right.
-
-# Setup
-
-This section describes the software and optional hardware that will be used in this tutorial.
+An introduction to designing, simulating and synthesizing digital hardware designs using open-sourced tools and hardware. This tutorial consists of several hardware designs which can be synthesized and loaded onto GadgetFactory's Papilio hardware.
 
 ## Hardware
 
-This project makes use of the Papilio Pro and Papilio LogicStart Megawing development boards. These can be purchased as a kit [for about $100.00 online, here](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/). The Papilio Pro contains a Spartan 6 Xilinx FPGA which will accept our circuit designs; the LogicStart Megawing provides various IOs (buttons, LEDs and seven segment displays) to experiment with.
+No hardware is required to experiment with circuit design and simulation. However, you'll need some hardware if you wish to realize your designs in electronic form. :)
 
-A detailed description of the [Papilio Pro hardware can be found here](http://papilio.cc/index.php?n=Papilio.PapilioPro); the [LogicStart Megawing, here](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing).
+This tutorial makes use of the [Papilio Pro](http://papilio.cc/index.php?n=Papilio.PapilioPro) and [Papilio LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) development boards. These can be purchased as a kit [for about $100.00 online](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/). The Papilio Pro contains a [Spartan 6 Xilinx FPGA](https://www.xilinx.com/products/silicon-devices/fpga/spartan-6.html) which will accept our circuit designs and the LogicStart Megawing provides various IOs (buttons, LEDs, a seven segment displays) to experiment with.
 
-## Software
+A detailed description (and schematic) of the [Papilio Pro hardware can be found here](http://papilio.cc/index.php?n=Papilio.PapilioPro); the [LogicStart Megawing, here](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing).
 
-These instructions are aimed at 32-bit Ubuntu Linux users (specifically i386 Ubuntu 16.04 Desktop). Other 32-bit versions of Linux should work equally well, but careful with 64-bit as noted below. Ubuntu can be virtualized on Mac OS X or Windows through use of VirtualBox (or other, commercial, virtualization tools). These instructions have been tested on a virtualized Ubuntu instance running on a MacBook Pro using Mac OS X El Capitan (v10.11).
+## Getting Started
 
-Where possible, I have included installation instructions for Mac OS X, too. All of the design entry and simulation tools will run on Windows, Linux and Mac OS. Ubuntu or Windows is required only when working with the Papilio/Xilinx hardware.  
+1. [Instructions for installing open source tools.](docs/install-instructions.md)
+2. Instructions for simulating designs and viewing waveforms.
+3. Instructions for synthesizing designs for Xilinx chips on the Papilio hardware
+4. Instructions for loading synthesized designs onto the Papilio board
 
-Note that I have had issues getting the Papilio software to run correctly on 64-bit versions of Ubuntu. **If you plan on using the Papilio hardware and toolset, I recommend using an i386 version of Ubuntu.** Since this is the not the standard Ubuntu installation, you'll need dig around a bit to find the i386 ISO. I used [this one](http://mirror.pnl.gov/releases/xenial/ubuntu-16.04.1-desktop-i386.iso).
+## Example Projects
 
-### Icarus Verilog
+Listed in ascending order of complexity.
 
-_What's it do?_ Simulates hardware designs written in the Verilog language.
-
-On Ubuntu
-```
-$ apt update             
-$ apt install verilog
-```
-
-On Mac OS X
-```
-$ brew install icarus-verilog
-```
-
-### GTKWave
-
-_What's it do?_ Provides a GUI to view waveform output generated by Icarus Verilog and a variety of other industry standard circuit simulators.
-
-On Ubuntu:
-```
-$ apt install gtkwave
-```
-
-On Mac OS X:
-```
-$ brew install gtkwave
-```
-
-**NOTE (Mac OS X):** I've found the build of GTKWave generated by Homebrew to be usable but less stable than the pre-packaged builds available on the web. If Homebrew fails you, [try one such as this]([http://mac.softpedia.com/get/Utilities/gtkwave.shtml#download).
-
-### Yosys Open Synthesis Suite
-
-_What's it do?_ Synthesizes Verilog hardware designs from _RTL_ into a gate-level netlist. (This is for demonstration only; Xilinx WebPACK will be utilized to synthesize our design to the Papilio board.)
-
-On Ubuntu:
-```
-$ sudo apt install yosys
-```
-
-On Mac OS X:
-```
-$ brew tap bsmt/homebrew-tap
-$ brew install yosys
-```
-
-### Xilinx ISE WebPack
-
-_What's it do?_ Synthesizes Verilog into a format that can be loaded onto the Papilio's Spartan FPGA.
-
-Useful only if targeting these examples towards the Papilio FPGA board. Not required for those without a Papilio or other Xilinx-based development board.
-
-Note that ISE was EOL'd in 2013 and is no longer supported. It is nonetheless required for designs targeting the older Spartan-family of FPGAs found on the Papilio hardware.
-
-Xilinx makes WebPack available at no cost but the installation process can be non-trivial. Xilinx requires you to register on their website before downloading the software and also to generate and install a license file before using it. Plus, on Linux, you'll need to tweak the installation to prevent library conflicts with modern distributions (a side effect of the software's age and lack of support). Xilinx does not offer a Mac OS X version of the code.
-
-#### 1. Download
-
-Download the most recent version of the ISE Design tools (full product installation, _all 6 GBs_ of it) from Xilinx's site (version 14.7). [For Linux, here](https://survey.xilinx.com/ss/wsb.dll/Xilinx/ISE_Download_Survey.htm?wsb5=14.7&wsb6=1&wsb7=Xilinx_ISE_DS_Lin_14.7_1015_1.tar) and [for Windows, here](https://survey.xilinx.com/ss/wsb.dll/Xilinx/ISE_Download_Survey.htm?wsb5=14.7&wsb6=1&wsb7=Xilinx_ISE_DS_Win_14.7_1015_1.tar). Note that you will have to fill out a survey and accept EULA terms to download.
-
-#### 2. Install
-
-Windows users can execute the installer tool; Linux users should follow the instructions below:
-
-  1. Un-tar the download; `cd` into Xilinx directory; run `xsetup` as superuser.
-  2. When prompted for which suite of tools to install, choose **ISE WebPack** (not the default selection)
-  3. Allow tools to be installed into the (default) `/opt/Xilinx` directory.
-
-#### 3. Fix the libraries
-
-Disable obsolete versions of the C standard library to prevent issues with other tools (this will be required to get a license in the next section):
-
-```
-sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.0.8.disable
-
-# Ignore these on Fedora
-sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.0.8.disable
-```
-
-#### 4. Fire it up
-
-As noted in the installation wizard, you must source a shell script (to configure environmental variables and whatnot) prior to running ISE WebPack.
-
-For Ubuntu users this should be as simple as:
-
-```
-$ source /opt/Xilinx/14.7/ISE_DS/settings32.sh
-```
-
-Then, to run the tool:
-
-```
-$ /opt/Xilinx/14.7/ISE_DS/ISE/bin/lin/ise
-```
-
-Do not run ISE as superuser (various functions will not work).
-
-I find it convenient to combine both steps into an `ise` alias. Bash shell users can accomplish this by appending the following to their `~/.bashrc` file:
-
-```
-alias ise='source /opt/Xilinx/14.7/ISE_DS/settings32.sh;/opt/Xilinx/14.7/ISE_DS/ISE/bin/lin/ise'
-```
-
-#### 5. Get a license
-
-The first time you run ISE you'll be prompted to install a feature license. Follow the dialog prompt to open the Xilinx License Configuration Manager or choose "Manage License..." from the ISE "Help" menu and follow these instructions:
-
-1. Click the "Acquire a License" tab
-2. Select the "Get free Vivado/ISE WebPack License" radio button
-3. Click "Next"
-4. A dialog will appear showing local system information; click "Connect Now".
-5. Firefox should open a Xilinx licensing page. If Firefox does not launch (and the "Connect Now" button seems to have no effect but dismissing the dialog), check the console output in the terminal you used to launch the software. More likely than not, you still have a library conflict preventing Firefox from opening. Revisit the _Fix the Libraries_ step above.
-6. Complete the Xilinx license questionnaire.
-7. The license file should be emailed to you; when you receive it, return to the Xilinx License Configuration Manager, click the "Manage Licenses" tab; click the "Load License..." button and navigate to the `.lic` file you received in email. Voila! You're ready to go!
-
-### Papilio Loader
-
-_What's it do?_ Loads the Xilinx-synthesized designs (created using ISE WebPack) onto the Papilio board.
-
-The Papilio loader replaces standard JTAG device programming tools (providing a less expensive, more user friendly approach to FPGA development). The most reliable way to install this software on Linux is to clone its Git repository and run the installer script.
-
-The Papilio Loader requires Java and a USB device driver to operate, plus we'll be using Git to fetch it. Install these dependent packages first:
-
-```
-$ sudo apt update
-$ sudo apt install default-jdk libftdi-dev git
-```
-
-Then, from within your home directory (or other convenient location), use Git to fetch the Papilio Loader source code:
-
-```
-$ cd ~
-$ git clone https://github.com/GadgetFactory/Papilio-Loader.git
-```
-
-Run the Linux installer script (located in the source directory we just cloned):
-
-```
-$ cd Papilio-Loader/
-$ ./linux-installer.sh
-```
-
-The installer script will load various application components in the `/opt/GadgetFactory/` directory and place links to the `papilio-loader-gui` and `papilio-prog` in `/usr/local/bin/`
+Project | Description
+--------|---------------------------
+[Knight Rider](knight-rider/) | A "hello world" project that does nothing but cycle the Papilio LogicStart Megawing's eight LEDs in a pattern reminiscent of Kit from the 80s TV show Knight Rider. This is a good starting point for testing your toolchain and hardware.
+[Breathing LEDs](breathing-led/) | Drives all the LEDs on the LogicStart MegaWing in a breathing pattern, slowly modulating their brightness from 0 to 100% and back again.
+[Seven Segment Counter](seven-segment-counter/) | A slightly more complicated project that drives all four seven-segment digits on the LogicStart with a rapidly incrementing base-10 count.
+[Konami Acceptor](konami-acceptor/) | A simple state machine that listens to d-pad inputs on the LogicStart MegaWing to detect the famous Konami sequence, up-up-down-down-left-right-left-right.

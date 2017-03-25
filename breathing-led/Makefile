@@ -6,7 +6,7 @@ test = test/testbench.vt
 
 # Removes all derived sources and files
 clean:
-	rm -f *.vcd gen/* diagram.* breathing-led.netlist.v
+	rm -f *.vcd gen/* diagram.* *.vg
 
 # Converts Verilog into an intermediate representation that is optimized for
 # simulating.

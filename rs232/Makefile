@@ -2,7 +2,7 @@
 all: simulate
 
 modules = $(wildcard rtl/*.v)
-test = test/testbench.vt
+test = test/testbench.v
 
 # Removes all derived sources and files
 clean:
@@ -11,7 +11,7 @@ clean:
 # Converts Verilog into an intermediate representation that is optimized for
 # simulating.
 compile: iverlog_installed $(modules) $(test)
-	iverilog -o gen/testbench $(test) $(modules)
+	iverilog -o gen/testbench $(modules) $(test)
 
 # Runs a Verilog simulation of our testbench (and by extension our design)
 simulate: vvp_installed compile
@@ -24,8 +24,8 @@ synthesize: yosys_installed
 
 # Loads a the Xilix .bit file on the Papilio's Spartan FPGA. Note that the .bit
 # file must be created by Xilinx' ISE tool; this makefile cannot create it.
-fpga: papilio_installed papilio/seven_segment.bit
-	sudo papilio-prog -v -f papilio/seven_segment.bit
+fpga: papilio_installed papilio/breathingled.bit
+	sudo papilio-prog -v -f papilio/breathingled.bit
 
 
 # Utility targets to check for proper tools installation

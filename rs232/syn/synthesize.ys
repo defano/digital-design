@@ -1,6 +1,6 @@
 # Read design
-read_verilog rtl/breathing-led.v
-hierarchy -check -top breathingled
+read_verilog rtl/loopback.v rtl/uart.v rtl/tx.v rtl/rx.v
+hierarchy -check -top loopback
 
 # Map processes (sequential logic) and optimize
 proc; opt;
@@ -26,7 +26,5 @@ dfflibmap -liberty ../cells/osu025_stdcells.lib
 # Eliminate unused nets and logic
 clean
 
-show -format svg -prefix diagram
-
 # Write synthesized design output
-write_verilog breathing-led.vg
+write_verilog loopback.vg

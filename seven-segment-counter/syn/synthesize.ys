@@ -27,4 +27,4 @@ dfflibmap -liberty ../cells/osu025_stdcells.lib
 clean
 
 # Write synthesized design output
-write_verilog seven-segment.netlist.v
+write_verilog seven-segment.vg

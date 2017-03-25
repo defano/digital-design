@@ -27,4 +27,4 @@ dfflibmap -liberty ../cells/osu025_stdcells.lib
 clean
 
 # Write synthesized design output
-write_verilog konami-acceptor.netlist.v
+write_verilog konami-acceptor.vg
