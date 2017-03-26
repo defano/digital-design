@@ -27,3 +27,4 @@ Project | Description
 [Breathing LEDs](breathing-led/) | Drives all the LEDs on the LogicStart MegaWing in a breathing pattern, slowly modulating their brightness from 0 to 100% and back again.
 [Seven Segment Counter](seven-segment-counter/) | A slightly more complicated project that drives all four seven-segment digits on the LogicStart with a rapidly incrementing base-10 count.
 [Konami Acceptor](konami-acceptor/) | A simple state machine that listens to d-pad inputs on the LogicStart MegaWing to detect the famous Konami sequence, up-up-down-down-left-right-left-right.
+[Serial Communications UART](uart/) | Implementation of a serial communications UART; allows the Papilio to communicate with a host PC using a serial communications terminal like PuTTY or minicom.
