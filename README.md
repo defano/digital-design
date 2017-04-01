@@ -36,3 +36,4 @@ Project | Description
 [Seven Segment Counter](seven-segment-counter/) | A slightly more complicated project that drives all four seven-segment digits on the LogicStart with a rapidly incrementing base-10 count.
 [Konami Acceptor](konami-acceptor/) | A simple state machine that listens to d-pad inputs on the LogicStart MegaWing to detect the famous Konami sequence, up-up-down-down-left-right-left-right.
 [Serial Communications UART](uart/) | Implementation of a serial communications UART; allows the Papilio to communicate with a host PC using a serial communications terminal like PuTTY or minicom.
+[Microblaze Microcontroller](microblaze/) | Instructions for creating a basic "system on a chip" design, including the Xilinx Microblaze CPU, 16KB of internal "block" RAM, a general purpose output module for controlling LEDs, and an embedded software project to drive it.
