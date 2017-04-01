@@ -76,41 +76,37 @@ module testbench ();
 
   task press_up;
     begin
-      @(posedge clk);
       up <= 1'b1;
-      @(posedge clk);
+      @(posedge acceptor.up_debounced);
       up <= 1'b0;
-      @(posedge clk);
+      @(negedge acceptor.up_debounced);
     end
   endtask
 
   task press_down;
     begin
-      @(posedge clk);
       down <= 1'b1;
-      @(posedge clk);
+      @(posedge acceptor.down_debounced);
       down <= 1'b0;
-      @(posedge clk);
+      @(negedge acceptor.down_debounced);
     end
   endtask
 
   task press_left;
     begin
-      @(posedge clk);
       left <= 1'b1;
-      @(posedge clk);
+      @(posedge acceptor.left_debounced);      
       left <= 1'b0;
-      @(posedge clk);
+      @(negedge acceptor.left_debounced);            
     end
   endtask
 
   task press_right;
     begin
-      @(posedge clk);
       right <= 1'b1;
-      @(posedge clk);
+      @(posedge acceptor.right_debounced);      
       right <= 1'b0;
-      @(posedge clk);
+      @(negedge acceptor.right_debounced);      
     end
   endtask
 

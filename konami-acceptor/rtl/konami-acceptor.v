@@ -33,13 +33,18 @@ module konamiacceptor (
   parameter ACCEPT  = 4'd9;     // Input sequence accepted; user gets 40 lives
   parameter REJECT  = 4'd10;    // Input sequence rejected; user gets 3 lives
 
-  reg [3:0] state;
-  reg [24:0] timeout_ctr;
-  reg [1:0] down_shift;
-  reg [1:0] up_shift;
-  reg [1:0] left_shift;
-  reg [1:0] right_shift;
+   reg [3:0]   state;   
+   reg [24:0] timeout_ctr;
+   reg [1:0]  down_shift;
+   reg [1:0]  up_shift;
+   reg [1:0]  left_shift;
+   reg [1:0]  right_shift;
 
+   wire      down_debounced;
+   wire      up_debounced;
+   wire      left_debounced;
+   wire      right_debounced;
+   
   wire [6:0] digit_0;
   wire [6:0] digit_1;
   wire [6:0] digit_2;
@@ -52,6 +57,34 @@ module konamiacceptor (
   assign left_released  = left_shift == 2'b10;
   assign right_released = right_shift == 2'b10;
 
+  debouncer down_debouncer(
+    .clk(clk),
+    .reset_(reset_),
+    .raw(down),
+    .debounced(down_debounced)			   
+  );
+   
+  debouncer up_debouncer(
+    .clk(clk),
+    .reset_(reset_),
+    .raw(up),
+    .debounced(up_debounced)			   
+  );
+   
+  debouncer left_debouncer(
+    .clk(clk),
+    .reset_(reset_),
+    .raw(left),
+    .debounced(left_debounced)			   
+  );
+   
+  debouncer right_debouncer(
+    .clk(clk),
+    .reset_(reset_),
+    .raw(right),
+    .debounced(right_debounced)			   
+  );
+   
   konamicoder coder (
     .digit_0(digit_3),
     .digit_1(digit_2),
@@ -83,25 +116,25 @@ module konamiacceptor (
     if (!reset_)
       down_shift <= 2'd0;
     else
-      down_shift <= {down_shift[0], down};
+      down_shift <= {down_shift[0], down_debounced};
 
   always@ (posedge clk or negedge reset_)
     if (!reset_)
       up_shift <= 2'd0;
     else
-      up_shift <= {up_shift[0], up};
+      up_shift <= {up_shift[0], up_debounced};
 
   always@ (posedge clk or negedge reset_)
     if (!reset_)
       left_shift <= 2'd0;
     else
-      left_shift <= {left_shift[0], left};
+      left_shift <= {left_shift[0], left_debounced};
 
   always@ (posedge clk or negedge reset_)
     if (!reset_)
       right_shift <= 2'd0;
     else
-      right_shift <= {right_shift[0], right};
+      right_shift <= {right_shift[0], right_debounced};
 
   always@ (posedge clk or negedge reset_)
     if (!reset_)

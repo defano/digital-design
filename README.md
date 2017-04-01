@@ -1,6 +1,6 @@
 # Introduction to Digital Design
 
-An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language and open-sourced tools and hardware. This tutorial consists of several hardware designs which can be synthesized and loaded onto [GadgetFactory's Papilio](http://papilio.cc) hardware.
+An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language with open-sourced tools and hardware. This tutorial consists of several hardware designs which can be synthesized and loaded onto [GadgetFactory's Papilio](http://papilio.cc) hardware.
 
 ## Hardware
 
@@ -12,13 +12,13 @@ A detailed description (and schematic) of the [Papilio Pro hardware can be found
 
 #### Looking to test a brand new Papilio Pro?
 
-Looking a known-good example with which to verify your hardware and setup? Each of the example projects include a pre-built `.bit` file that's ready to be programmed onto the FPGA.
+Looking for a known-good example with which to verify your hardware and setup? Each of the example projects include a pre-built `.bit` file that's ready to be programmed onto the FPGA.
 
 Install the `papilio-prog` programmer ([instructions here](docs/install-instructions.md)), then program the device following [these instructions](docs/papilio-instructions.md).
 
 ## Getting Started
 
-Each of the [example projects](#example-projects) contains RTL source code; a test bench to verify the design and generate simulation waveforms; a synthesis script for translating your design into a gate-level netlist (just for fun--not used elsewhere); a Papilio Pro user constraints file (`UCF`) providing a mapping of physical pins on the FPGA to inputs/outputs in our designs; and a pre-built `.bit` file that can be immediately loaded onto the Papilio Pro without having to run Xilinx' ISE software.
+Each of the [example projects](#example-projects) contains RTL source code; a test bench to verify the design and generate simulation waveforms; a synthesis script for translating your design into a gate-level netlist (just for fun--not otherwise used); a Papilio Pro user constraints file (`UCF`) defining a mapping of physical pins on the FPGA to inputs/outputs in our designs; and a pre-built `.bit` file that can be immediately loaded onto the Papilio Pro without having to run Xilinx' ISE software.
 
 1. [Instructions for installing open source tools](docs/install-instructions.md)
 2. [Instructions for simulating designs and viewing waveforms](docs/simulation-instructions.md)

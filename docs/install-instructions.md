@@ -8,11 +8,11 @@ This section describes the software that will be used in this tutorial.
 
 * **For students without hardware:** A computer running Linux, macOS or Windows.
 
-This tutorial is aimed at 32-bit Ubuntu Linux users (specifically `i386 Ubuntu 16.04 Desktop`). Other 32-bit versions of Linux should work equally well. Ubuntu can be virtualized on Mac OS X or Windows through use of VirtualBox or other tools.
+This tutorial is aimed at 32-bit Ubuntu Linux users (specifically `i386 Ubuntu 16.10 Desktop`). Other 32-bit versions of Linux should work equally well. Ubuntu can be virtualized on Mac OS X or Windows through use of VirtualBox or other tools.
 
 All of the design entry and simulation tools will run on Windows, Linux and Mac OS. Ubuntu or Windows is required only when working with the Papilio/Xilinx hardware.  
 
-Note that I have had issues getting the Papilio software to run correctly on 64-bit versions of Ubuntu. **If you plan on using the Papilio hardware and toolset, I recommend using an i386 version of Ubuntu.** I recommend [this one](http://mirror.pnl.gov/releases/xenial/ubuntu-16.04.1-desktop-i386.iso).
+Note that I have had issues getting the Papilio software to run correctly on 64-bit versions of Ubuntu. **If you plan on using the Papilio hardware and toolset, I recommend using an i386 version of Ubuntu Desktop such as [this one](http://mirror.pnl.gov/releases/16.10/ubuntu-16.10-desktop-i386.iso).**
 
 ## What to Install?
 
