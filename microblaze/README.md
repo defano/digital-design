@@ -10,9 +10,9 @@ You've been warned. Stick with the script until you've got a good sense of what 
 
 * Setup our environment
 * Generate the Microblaze CPU core
-* Synthesize our design
 * Create a firmware project (requires a synthesis output)
 * Run a simulation (of our hardware and software)
+* Synthesize our design
 * "Burn" our firmware into the memory models of the programming file
 
 ## Setup
@@ -89,11 +89,11 @@ That said, Xilinx' cores are not one-size-fits-all. They're configurable and dyn
 7. Generate the core by clicking the "Generate" button. This process will take several minutes to complete. When it does, you'll see this screen:
 <br><br>![Success](doc/coregen/6.png)
 
-8. Congratulations! You've created your first microprocessor core! Dismiss the "Readme" dialog and quit the Coregen application. Then, take a look at the contents of the `core/` directory to admire your handywork.
+Congratulations! You've created your first microprocessor core! Dismiss the "Readme" dialog and quit the Coregen application. Then, take a look at the contents of the `core/` directory to admire your handywork.
 
 ## Create the Firmware
 
-Creating firmware for an embedded system is often a non-trivial venture. Remember, we're not creating an "app" for an existing operating system or framework, but bootstrapping the computer. The details of which depend, of course, on the computer architecture. (Which, in our case, depends on the exact configuration of the cores in our design--fun!)
+Creating firmware for an embedded system is often a non-trivial venture. Remember, we're not creating an "app" for an existing operating system or framework, but bootstrapping the computer itself. The exact details and requirements of which depend, of course, on the computer architecture. (Which, in our case, depends on the configuration of the cores in our design--fun!)
 
 Fortunately, Xilinx takes some of the pain out of this for us. Their Eclipse-based `xsdk` knows how to compile and link code for our architecture based on data it gets from the Core Generator project.
 
@@ -127,31 +127,86 @@ $ xsdk
 
 int main() {
 
-	u32 data = 0x00;
-	XIOModule gpo;
+  u32 data = 0x00;
+  XIOModule gpo;
 
-	init_platform();
-	XIOModule_Initialize(&gpo, XPAR_IOMODULE_0_DEVICE_ID);
-	XIOModule_Start(&gpo);
+  init_platform();
 
-	while (1) {
-		data = ~data;
-		XIOModule_DiscreteWrite(&gpo, 1, data); // toggle LEDs (channel 1)
+  XIOModule_Initialize(&gpo, XPAR_IOMODULE_0_DEVICE_ID);
+  XIOModule_Start(&gpo);
 
-		// Delay to make change human perceptible. Comment-out for better simulation
-        int i = 0 ;
-        while (i < 200000) {
-          i++ ;
-        }
-	}
+  while (1) {
+    data = ~data;
+    XIOModule_DiscreteWrite(&gpo, 1, data); // toggle LEDs (channel 1)
 
-	// Not reachable, for completeness only
-	cleanup_platform();
-	return 0;
+    // Delay to make led toggle human perceptible. Comment-out for better simulation
+    int i = 0 ;
+    while (i < 200000) {
+      i++ ;
+    }
+  }
+
+  // Not reachable, for completeness only
+  cleanup_platform();
+  return 0;
 }
 ```
 
-Congratulations! You've now created your first program that will run on your own hardware design. 
+Congratulations! You've now created your first program that will run on your own hardware design.
+
+## Simulate
+
+At this point we are ready to simulate the hardware design with our firmware running inside of it. The process for doing so is a bit more complex than the simulations we've run in earlier tutorials; the details of which are encapsulated in the `Makefile` and described below.
+
+To run the simulation:
+
+```
+$ make
+```
+
+Which should produce the following output (we can safely ignore the warnings about the standard inconsistency).
+
+```
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+WARNING: /opt/Xilinx/14.7/ISE_DS/ISE/verilog/src/unisims/RAMB16BWER.v:410: $readmemh: Standard inconsistency, following 1364-2005.
+VCD info: dumpfile waveform.vcd opened for output.
+LEDs changed state to 00 at time          0 ns
+LEDs changed state to ff at time      45948 ns
+```
+
+Note how the LEDs change from `00` (off) to `ff` (on). The fact that this occurs is proof that our software is running on the design. Eventually, the LEDs will toggle back to off. But, recall, that our software has a long delay in it to make the change perceptible to the human eye. We'd have to run our simulation quite a long time before we saw the LEDs change again. Alternately, you could remove that delay from the code, extend the simulation time in `test/testbench.vt` and re-run the simulation.
+
+Want further proof that things are working? Open the generated waveform (`$ gtkwave waveform.vcd`) and examine the trace signals (those starting with `tr_`) in the top-level, `uut` module:
+
+![Waveform](doc/sim/1.png)
+
+#### Simulating the Microblaze model
+
+The Microblaze simulation model (`core/microblaze_mcs_v1_4.v`) that was generated by the `coregen` tool is "structural" in nature; that is, rather than describing the CPU's behavior in straight RTL terms (i.e., with `assign` and `always@` statements), it defines the CPU in terms of other components (called _cells_) that are part of Xilinx' library. We need to make these cells available to Icarus Verilog in order for it to work.
+
+There are three Xilinx cell library directories that we need to pass to `iverilog` when we invoke the simulator (using the `-y` command line switch):
+
+* `-y $(XILINX)/verilog/src/simprims`
+* `-y $(XILINX)/verilog/src/unimacro`
+* `-y $(XILINX)/verilog/src/unisims`
+
+The `$(XILINX)` variable should be defined in your environment to point to the Xilinx installation directory (`/opt/Xilinx/14.7/ISE_DS/ISE`) via the Xilinx setup shell script described in the tool setup instructions.
+
+Finally, there's a bit of "global" logic that's required to initialize/reset Xilinx-generated cores which we'll add to the simulation, too: `$(XILINX)/verilog/src/glbl.v`
+
+#### Initializing memory with our code
+
+In order to run a simulation of our firmware executing on the Microblaze CPU, we have to load our code into memory. Xilinx' BRAM memory models are designed to do just this. At the start of the simulation, they will attempt to initialize themselves by loading `.mem` files (an industry standard for describing the contents of a memory).
+
+Xilinx provides a tool, called `data2mem`, that will convert our compiled firmware from [ELF format](elf format) to `.mem` named in the convention expected by the memory models.
+
+When we're ready to program our FPGA with this design, we can use the same tool to embed our code in the hardware design so that as soon as the device initializes, it has the firmware already in memory.
 
 ## Create the ISE Project
 
