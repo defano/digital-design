@@ -6,6 +6,15 @@ This is not a trivial exercise. It's a bit like launching a rocket to the moon: 
 
 You've been warned. Stick with the script until you've got a good sense of what you're doing...
 
+## Overview
+
+* Setup our environment
+* Generate the Microblaze CPU core
+* Synthesize our design
+* Create a firmware project (requires a synthesis output)
+* Run a simulation (of our hardware and software)
+* "Burn" our firmware into the memory models of the programming file
+
 ## Setup
 
 There are a couple issues with our toolset that we need to resolve before getting started:
@@ -60,18 +69,96 @@ That said, Xilinx' cores are not one-size-fits-all. They're configurable and dyn
 
 [Microblaze](https://en.wikipedia.org/wiki/MicroBlaze) is a microprocessor design from Xilinx that is "easily" incorporated into an FPGA. It provides a simulation model that will let us simulate our design and watch the instruction execution. Note, however, that unlike the other Verilog RTL we've used, this simulation model is used purely for simulation. The Verilog contained within is _not_ used when generating the FPGA design (and uses parts of the language that cannot be easily synthesized). Xilinx uses some "secret sauce" to create the Microblaze inside the FPGA during the implementation phase.
 
-1. Open the Xilinx `coregen` tool with `$ coregen`. If it seems that command doesn't exist (or isn't in your path), then you likely haven't installed Xilinx ISE Webpack or sourced the setup shell script described in the software setup instructions. Otherwise, you should momentarily be presented with this screen: <br><br>![Coregen](doc/coregen/1.png)
+1. Open the Xilinx `coregen` tool with `$ coregen`. If it seems that command doesn't exist (or isn't in your path), then you likely haven't installed Xilinx ISE Webpack or sourced the setup shell script described in the software setup instructions. Otherwise, you should momentarily be presented with this screen:
+<br><br>![Coregen](doc/coregen/1.png)
 
 2. Create a new project by choosing File -> New Project. Create the new project inside the `core` directory of this tutorial. Use the default project name: `coregen`.
 
-3. You'll be prompted to select "Project Options". These define the type of FPGA we're "targeting" and some selections about how we'd like the simulation model built. Enter these options exactly as shown (no change required to the "Advanced" section): <br><br>![Part Options](doc/coregen/2.png)<br><br>![Generation Options](doc/coregen/3.png)
+3. You'll be prompted to select "Project Options". These define the type of FPGA we're "targeting" and some selections about how we'd like the simulation model built. Enter these options exactly as shown (no change required to the "Advanced" section):
+<br><br>![Part Options](doc/coregen/2.png)
+<br><br>![Generation Options](doc/coregen/3.png)
 
 4. Close the project options by clicking "OK", then find the Microblaze core within the available library of Xilinx-provided cores. Fastest way to do this is to type `microblaze` into the "Search IP Catalog" field.
 
-5. Double-click on the "Microblaze MCS 1.4" element in the library tree. This will display the core's configuration options. Enter these options exactly as shown (paying close attention to the change in input clock frequency, memory size and enabling the trace bus):<br><br>![MCS Options](doc/coregen/4.png)
+5. Double-click on the "Microblaze MCS 1.4" element in the library tree. This will display the core's configuration options. Enter these options exactly as shown (paying close attention to the change in input clock frequency, memory size and enabling the trace bus):
+<br><br>![MCS Options](doc/coregen/4.png)
 
-6. Click the GPO tab to view general purpose output configuration and enter these options exactly as shown:<br><br>![GPO Options](doc/coregen/5.png)
+6. Click the GPO tab to view general purpose output configuration and enter these options exactly as shown:
+<br><br>![GPO Options](doc/coregen/5.png)
 
-7. Generate the core by clicking the "Generate" button. This process will take several minutes to complete. When it does, you'll see this screen:<br><br>![Success](doc/coregen/6.png)
+7. Generate the core by clicking the "Generate" button. This process will take several minutes to complete. When it does, you'll see this screen:
+<br><br>![Success](doc/coregen/6.png)
 
 8. Congratulations! You've created your first microprocessor core! Dismiss the "Readme" dialog and quit the Coregen application. Then, take a look at the contents of the `core/` directory to admire your handywork.
+
+## Create the Firmware
+
+Creating firmware for an embedded system is often a non-trivial venture. Remember, we're not creating an "app" for an existing operating system or framework, but bootstrapping the computer. The details of which depend, of course, on the computer architecture. (Which, in our case, depends on the exact configuration of the cores in our design--fun!)
+
+Fortunately, Xilinx takes some of the pain out of this for us. Their Eclipse-based `xsdk` knows how to compile and link code for our architecture based on data it gets from the Core Generator project.
+
+1. Start the Xilinx Software Development Kit with:
+```
+$ xsdk
+```
+
+2. If prompted to choose a workspace, select the `src/` directory of this tutorial. If not, close the "Welcome..." tab that appears on startup, then, from the File menu, choose "Switch Workspace" -> "Other..." and browse to the `src/` directory.
+<br><br>![Workspace Launcher](doc/xsdk/0.png)
+
+3. From the File menu, choose "New" -> "Application Project". You'll be presented with a screen like the one shown below. Enter `helloworld` as the project name and assure that the location is the `src/` directory of this tutorial.
+<br><br>![New Project](doc/xsdk/1.png)
+
+4. From the "Hardware Platform" drop-down menu, choose "Create new". The following dialog box will appear. Enter the project name `papilio-pro` then specify a "Target Hardware Specification" by clicking the adjacent "Browse..." button and selecting the `microblaze_mcs_v1_4_sdk.xml` file that was generated by the `coregen` tool inside the `core/` directory.
+<br><br>![New Hardware Project](doc/xsdk/2.png)
+
+5. Click "Finish" to create the hardware project. You'll be presented again with the "New Project" dialog. It should look like the screenshot shown below. If so, click "Finish".
+<br><br>![New Project](doc/xsdk/3.png)
+
+6. The workspace window should appear (as below) and the compile process should have succeeded. You should have three (related) projects in your workspace: `helloworld` (our firmware), `helloworld_bsp` (a _board support package_ containing software libraries for configuring and driving hardware components like the GPO module) and `papilio-pro` (a hardware specification including address space information about the block RAMs).
+<br><br>![Workspace](doc/xsdk/4.png)
+
+7. Our `helloworld` firmware will simply blink all eight LEDs on the LogicStart Megawing. We can achieve this by replacing the contents of the `helloworld.c` file (in the `helloworld` project, under `src/`) with the following:
+
+```
+#include <stdio.h>
+#include "platform.h"
+#include "xparameters.h"
+#include "xiomodule.h"
+
+int main() {
+
+	u32 data = 0x00;
+	XIOModule gpo;
+
+	init_platform();
+	XIOModule_Initialize(&gpo, XPAR_IOMODULE_0_DEVICE_ID);
+	XIOModule_Start(&gpo);
+
+	while (1) {
+		data = ~data;
+		XIOModule_DiscreteWrite(&gpo, 1, data); // toggle LEDs (channel 1)
+
+		// Delay to make change human perceptible. Comment-out for better simulation
+        int i = 0 ;
+        while (i < 200000) {
+          i++ ;
+        }
+	}
+
+	// Not reachable, for completeness only
+	cleanup_platform();
+	return 0;
+}
+```
+
+Congratulations! You've now created your first program that will run on your own hardware design. 
+
+## Create the ISE Project
+
+source ../core/microblaze_mcs_setup.tcl
+
+```
+microblaze_mcs_setup: Found 1 MicroBlaze MCS core.
+microblaze_mcs_setup: Added "-bm" option for "microblaze_mcs_v1_4.bmm" to ngdbuild command line options.
+microblaze_mcs_setup: Done.
+```
