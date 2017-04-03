@@ -8,12 +8,14 @@ You've been warned. Stick with the script until you've got a good sense of what 
 
 ## Overview
 
-* Setup our environment
-* Generate the Microblaze CPU core
-* Create a firmware project (requires a synthesis output)
-* Run a simulation (of our hardware and software)
-* Synthesize our design
-* "Burn" our firmware into the memory models of the programming file
+Here are the steps we'll follow to produce our design. Each is described in detail, below:
+
+1. [Setup the environment](#setup)
+2. [Generate the Microblaze CPU core](#create-the-microblaze-core)
+3. [Create the firmware](#create-the-firmware) (requires a synthesis output)
+4. [Run a simulation](#simulate) (of our hardware and software)
+5. [Synthesize the design](#synthesize-the-design)
+6. [Create the programming file](#create-the-programming-file)
 
 ## Setup
 
@@ -196,24 +198,41 @@ There are three Xilinx cell library directories that we need to pass to `iverilo
 * `-y $(XILINX)/verilog/src/unimacro`
 * `-y $(XILINX)/verilog/src/unisims`
 
-The `$(XILINX)` variable should be defined in your environment to point to the Xilinx installation directory (`/opt/Xilinx/14.7/ISE_DS/ISE`) via the Xilinx setup shell script described in the tool setup instructions.
+The `$(XILINX)` variable should be defined in your environment to point to the Xilinx installation directory (`/opt/Xilinx/14.7/ISE_DS/ISE`) via the Xilinx setup shell script described in the tool setup instructions. Verilog will search these directories for modules matching those declared elsewhere in the design.
 
 Finally, there's a bit of "global" logic that's required to initialize/reset Xilinx-generated cores which we'll add to the simulation, too: `$(XILINX)/verilog/src/glbl.v`
 
 #### Initializing memory with our code
 
-In order to run a simulation of our firmware executing on the Microblaze CPU, we have to load our code into memory. Xilinx' BRAM memory models are designed to do just this. At the start of the simulation, they will attempt to initialize themselves by loading `.mem` files (an industry standard for describing the contents of a memory).
+In order to run a simulation of our firmware executing on the Microblaze CPU, we have to load our code into memory. Xilinx' BRAM memory models are designed to do just this. At the start of the simulation, they will attempt to initialize themselves by loading data from `.mem` files (an industry standard for describing the contents of a memory).
 
-Xilinx provides a tool, called `data2mem`, that will convert our compiled firmware from [ELF format](elf format) to `.mem` named in the convention expected by the memory models.
+Xilinx provides a tool called `data2mem` that will convert our compiled firmware from [ELF format](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) to `.mem`, named in the convention expected by the memory models. Executing `make memory` (a subtask of `simulate`) will generate these files in the root directory of the tutorial.
 
-When we're ready to program our FPGA with this design, we can use the same tool to embed our code in the hardware design so that as soon as the device initializes, it has the firmware already in memory.
+When we're ready to program our FPGA with this design, we will use the same tool to embed our code in the hardware design so that as soon as the chip initializes, it has the firmware already in memory (like making a ROM inside the FPGA).
 
-## Create the ISE Project
+## Synthesize the design
 
-source ../core/microblaze_mcs_setup.tcl
+Now that we've proven the correctness of our design through simulation, we're ready to synthesize it into a Xilinx `.bit` file. This procedure is largely identical to the synthesis process used for other projects. (Refer to the [synthesis instructions](../docs/synthesis-instructions.md) for more detailed instructions.)
 
+1. Create a new ISE project in the root directory of this project (`microblaze/ise`). As always, be sure to configure the project with the correct Spartan 6 part properties (part `xc6slx9`, package `tqg144`, speed grade `-2`).
+
+2. Add the top-level design (`rtl/microblaze.v`) and the Papilio Pro UCF (`papilio/papilio-pro.ucf`) sources to the project.
+
+3. Include the Microblaze in the design by adding the `core/microblaze_mcs_v1_4.xco` core specification file to the hierarchy (**do not** add the `.v` simulation file). Your project hierarchy should look like:
+<br><br>![Project Workspace](doc/ise/1.png)
+
+4. At the bottom of the ISE project window, select the "Tcl Console" tab. If no such tab is visible, choose "View" -> "Panels" -> "Tcl Console" from the menubar to show it. Then, in the "Command >" field at the bottom of the panel, enter `source ../core/microblaze_mcs_setup.tcl`. This will perform some custom configuration of the ISE synthesis process specific to using this core and will cause the translate process to generate a special, post-place-and-route `.bmm` file that we'll use to create the final programming file. If this step succeeds, you'll see the following printed in the Tcl Console:
 ```
+Command>source ../core/microblaze_mcs_setup.tcl
 microblaze_mcs_setup: Found 1 MicroBlaze MCS core.
 microblaze_mcs_setup: Added "-bm" option for "microblaze_mcs_v1_4.bmm" to ngdbuild command line options.
 microblaze_mcs_setup: Done.
 ```
+
+5. Lastly, generate the base `.bit` file by choosing to top-level module (`microblaze`) in the hierarchy. Then, double-click the "Generate Programming File" step in the process list below.
+
+## Create the programming file
+
+The programming file created above (`ise/microblaze.bit`) is a perfectly good programming file. But, it doesn't contain the firmware "burned in" to it. If you load it onto the FPGA, the processor core will come out of reset and begin executing instructions out of the uninitialized memory. Crash! (The visible result of which will be nothing--no LEDs blinking.)
+
+To correct this, we need to burn our firmware into the design using Xilinx' `data2mem` tool.  
