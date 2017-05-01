@@ -23,11 +23,13 @@ bd_bmm_exists:
 
 # Removes all Makefile derived sources and files (does not remove ISE/coregen files)
 clean:
-	rm -f *.vcd gen/* diagram.* *.vg *.mem *.log
+	rm -f *.vcd diagram.* *.vg *.mem *.log
+	rm -rf gen/
 
 # Converts Verilog into an intermediate representation that is optimized for
 # simulating.
 compile: iverlog_installed memory $(test)
+	-mkdir gen; true
 	iverilog -o gen/testbench $(libs) $(XILINX)/verilog/src/glbl.v $(test)
 
 # Runs a Verilog simulation of our testbench (and by extension our design)

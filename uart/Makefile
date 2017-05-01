@@ -6,11 +6,13 @@ test = test/testbench.v
 
 # Removes all derived sources and files
 clean:
-	rm -f *.vcd gen/* diagram.* *.vg
+	rm -f *.vcd diagram.* *.vg
+	rm -rf gen/
 
 # Converts Verilog into an intermediate representation that is optimized for
 # simulating.
 compile: iverlog_installed $(modules) $(test)
+	-mkdir gen; true
 	iverilog -o gen/testbench $(modules) $(test)
 
 # Runs a Verilog simulation of our testbench (and by extension our design)
