@@ -20,9 +20,9 @@ module testbench ();
   // Initialize the clock signal to zero; drive reset_ active (low) for the
   // first 100ns of the simulation.
   initial begin
-    clk = 1'b0;
-    reset_ = 1'b0;
-    #100 reset_ = 1'b1;
+    clk <= 1'b0;
+    reset_ <= 1'b0;
+    #100; reset_ <= 1'b1;
   end
 
   // Stop the simulation after 500ms; note that simulations can run indefinitely
@@ -33,9 +33,9 @@ module testbench ();
   end
 
   // Toggle the clock every 31.25ns (32 MHz frequency)
-  initial begin forever
-	  #31.25 clk = ~clk;
-	end
+  initial forever begin
+    #31.25; clk <= ~clk;
+  end
 
   // Produce a waveform output of this simulation
   initial begin
