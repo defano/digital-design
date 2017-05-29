@@ -1,5 +1,5 @@
 # Read design
-read_verilog rtl/seven-segment.v rtl/bcd-coder.v rtl/display-driver.v
+read_verilog ../rtl/sevensegment.v ../rtl/bcdcoder.v ../rtl/displaydriver.v
 hierarchy -check -top sevensegment
 
 # Map processes (sequential logic) and optimize
@@ -15,16 +15,16 @@ memory; opt
 techmap; opt
 
 # Prepare mapping flip-flops to osu025_stdcells
-dfflibmap -prepare -liberty ../cells/osu025_stdcells.lib
+dfflibmap -prepare -liberty ../../cells/osu025_stdcells.lib
 
 # Map combinatorial logic to cmos_cells
-abc -liberty ../cells/cmos_cells.lib
+abc -liberty ../../cells/cmos_cells.lib
 
 # Map flip-flops (sequential logic) to osu025_stdcells
-dfflibmap -liberty ../cells/osu025_stdcells.lib
+dfflibmap -liberty ../../cells/osu025_stdcells.lib
 
 # Eliminate unused nets and logic
 clean
 
 # Write synthesized design output
-write_verilog seven-segment.vg
+write_verilog sevensegment.vg

@@ -1,0 +1,3 @@
+verilog work "../rtl/displaydriver.v"
+verilog work "../rtl/bcdcoder.v"
+verilog work "../rtl/sevensegment.v"
