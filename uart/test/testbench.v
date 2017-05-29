@@ -11,7 +11,7 @@ module testbench();
    reg 	      reset_;
    reg 	      clk;
    
-   uart uart(
+   uart uut(
 	    .clk32(clk),
 	    .reset_(reset_),
 	    .rx(serial_loopback),
@@ -27,9 +27,9 @@ module testbench();
       $dumpvars();
    end
 
-   // Clock generation
+   // 32MHz clock generation
    initial forever begin
-      #1 clk <= ~clk;
+      #31.25 clk <= ~clk;
    end
 
    // Reset assertion
@@ -40,22 +40,23 @@ module testbench();
       reset_ = 1;
    end
 
-   // Kick-off test by transmitting first byte...
+   // Kick-off test by transmitting first byte when chip comes out of reset...
    initial begin
-      @(posedge reset_);
+      @(posedge reset_);  // wait until reset is deasserted
       txdata <= 8'h0;
       tx_enable <= 1'b1;
    end
 
-   // ... following bytes are triggered by rx of first byte
+   // ... subsequent bytes are triggered by rx of first byte
    always@ (posedge clk or negedge reset_)
      if (!reset_)
        txdata <= 8'd0;
-     else if (rx_enable) begin
 
+     // Received byte from UUT
+     else if (rx_enable) begin
 	// Check if txdata == rxdata
 	if (rxdata == txdata) begin
-	   $display("Success. Received test data %d", rxdata);
+	   $display("Success. Tx byte %x, received byte %x", txdata, rxdata);
 	   txdata <= txdata + 1;
 	   tx_enable <= 1'b1;	   
 	end
@@ -65,8 +66,10 @@ module testbench();
 	   $display("Failure. Expected %d but got %d.", txdata, rxdata);
 	   $finish;	   
 	end
-     end 
-     else if (rxdata == 8'hff)  // done when finished with last byte
+     end // if (rx_enable)
+
+     // Received last byte, we're done
+     else if (rxdata == 8'hff)  
        $finish;
 
    // Clear tx_enable one clock after asserting it

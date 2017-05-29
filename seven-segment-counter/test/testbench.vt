@@ -36,13 +36,57 @@ module testbench ();
 
   // Toggle the clock every 31.25ns (32 MHz frequency)
   initial begin forever
-	  #31.25 clk = ~clk;
-	end
+    #31.25 clk = ~clk;
+  end
 
   // Produce a waveform output of this simulation
   initial begin
-	  $dumpfile("waveform.vcd");
-	  $dumpvars();
+    $dumpfile("waveform.vcd");
+    $dumpvars();
   end
+
+  // Sample the output for each display digit when it changes (so that we output
+  // this value to the console).
+  
+  reg [6:0] digit_0;
+  reg [6:0] digit_1;
+  reg [6:0] digit_2;
+  reg [6:0] digit_3;  
+
+  always@(enables) begin
+    case(enables)
+    4'b1110: digit_0 <= segments;
+    4'b1101: digit_1 <= segments;
+    4'b1011: digit_2 <= segments;
+    4'b0111: digit_3 <= segments;          
+    endcase
+  end
+
+  // Display changes to the seven-segment displays
+  always@(digit_3 or digit_2 or digit_1 or digit_0)
+    $display("Display changed to [%s][%s][%s][%s]",
+    		      segment_decode(digit_0),
+    		      segment_decode(digit_1),
+		      segment_decode(digit_2),
+		      segment_decode(digit_3));
+
+  // Function converts seven-segment display "segments" back into a human readable
+  // character (the opposite of what bcdcoder.v is doing)  
+  function [7:0] segment_decode;
+    input [6:0] segments;
+    begin
+      segment_decode = segments === ~7'b0111111 ? "0" :
+      	               segments === ~7'b0000110 ? "1" :
+                       segments === ~7'b1011011 ? "2" :
+	               segments === ~7'b1001111 ? "3" :
+	      	       segments === ~7'b1100110 ? "4" :
+	               segments === ~7'b1101101 ? "5" :
+		       segments === ~7'b1111101 ? "6" :
+		       segments === ~7'b0000111 ? "7" :
+		       segments === ~7'b1111111 ? "8" :
+		       segments === ~7'b1101111 ? "9" :
+		       segments === ~7'b1000000 ? "_" : "?";			
+    end
+  endfunction
 
 endmodule

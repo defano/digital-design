@@ -29,7 +29,7 @@ module testbench ();
   // (with waveforms loaded incrementally in the viewer.) Press ctrl-c to break
   // iverilog, then enter '$finish' to stop the simulation.
   initial begin
-    #500000000 $finish;
+    #1100000000 $finish;
   end
 
   // Toggle the clock every 31.25ns (32 MHz frequency)
@@ -42,5 +42,8 @@ module testbench ();
 	  $dumpfile("waveform.vcd");
 	  $dumpvars();
   end
+
+  always@ (led)
+  	  $display("LEDs changed to %b", led);
 
 endmodule

@@ -17,7 +17,7 @@ module testbench ();
   wire [3:0] digit_enable_;
 
   // Create an instance of the circuit under test
-  konamiacceptor acceptor (
+  konamiacceptor uut (
     .clk(clk),
     .reset_(reset_),
 
@@ -29,6 +29,20 @@ module testbench ();
     .segment_(segment_),
     .digit_enable_(digit_enable_)
   );
+
+  always@ (uut.state)
+    $display("Konami state changed to %d (%s)", uut.state,
+      uut.state == 4'd0 ? "START"   :
+      uut.state == 4'd1 ? "UP_1"    :
+      uut.state == 4'd2 ? "UP_2"    :
+      uut.state == 4'd3 ? "DOWN_1"  :
+      uut.state == 4'd4 ? "DOWN_2"  :
+      uut.state == 4'd5 ? "LEFT_1"  :
+      uut.state == 4'd6 ? "RIGHT_1" :
+      uut.state == 4'd7 ? "LEFT_2"  :
+      uut.state == 4'd9 ? "ACCEPT"  :
+      uut.state == 4'd10 ? "REJECT" : "(BUG!)"      
+    );
 
   // Initialize the clock signal to zero; drive reset_ active (low) for the
   // first 100ns of the simulation.
@@ -51,8 +65,8 @@ module testbench ();
 
   // Toggle the clock every 31.25ns (32 MHz frequency)
   initial begin forever
-	  #31.25 clk = ~clk;
-	end
+    #31.25 clk = ~clk;
+  end
 
   initial begin
     #500;
@@ -77,36 +91,36 @@ module testbench ();
   task press_up;
     begin
       up <= 1'b1;
-      @(posedge acceptor.up_debounced);
+      @(posedge uut.up_debounced);
       up <= 1'b0;
-      @(negedge acceptor.up_debounced);
+      @(negedge uut.up_debounced);
     end
   endtask
 
   task press_down;
     begin
       down <= 1'b1;
-      @(posedge acceptor.down_debounced);
+      @(posedge uut.down_debounced);
       down <= 1'b0;
-      @(negedge acceptor.down_debounced);
+      @(negedge uut.down_debounced);
     end
   endtask
 
   task press_left;
     begin
       left <= 1'b1;
-      @(posedge acceptor.left_debounced);      
+      @(posedge uut.left_debounced);      
       left <= 1'b0;
-      @(negedge acceptor.left_debounced);            
+      @(negedge uut.left_debounced);            
     end
   endtask
 
   task press_right;
     begin
       right <= 1'b1;
-      @(posedge acceptor.right_debounced);      
+      @(posedge uut.right_debounced);      
       right <= 1'b0;
-      @(negedge acceptor.right_debounced);      
+      @(negedge uut.right_debounced);      
     end
   endtask
 

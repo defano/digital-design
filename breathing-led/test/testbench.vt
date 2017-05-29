@@ -34,13 +34,13 @@ module testbench ();
 
   // Toggle the clock every 31.25ns (32 MHz frequency)
   initial begin forever
-	  #31.25 clk = ~clk;
-	end
+    #31.25 clk = ~clk;
+  end
 
   // Produce a waveform output of this simulation
   initial begin
-	  $dumpfile("waveform.vcd");
-	  $dumpvars();
+    $dumpfile("waveform.vcd");
+    $dumpvars();
   end
 
 endmodule
