@@ -1,4 +1,4 @@
-PROJECT=knightrider
+PROJECT=breathingled
 UCF=../papilio/papilio-pro.ucf
 
 TARGET_DEVICE=xc6slx9-tqg144-2

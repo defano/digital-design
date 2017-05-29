@@ -1,5 +1,5 @@
 # Read design
-read_verilog rtl/breathing-led.v
+read_verilog ../rtl/breathing-led.v
 hierarchy -check -top breathingled
 
 # Map processes (sequential logic) and optimize
@@ -15,13 +15,13 @@ memory; opt
 techmap; opt
 
 # Prepare mapping flip-flops to osu025_stdcells
-dfflibmap -prepare -liberty ../cells/osu025_stdcells.lib
+dfflibmap -prepare -liberty ../../cells/osu025_stdcells.lib
 
 # Map combinatorial logic to cmos_cells
-abc -liberty ../cells/cmos_cells.lib
+abc -liberty ../../cells/cmos_cells.lib
 
 # Map flip-flops (sequential logic) to osu025_stdcells
-dfflibmap -liberty ../cells/osu025_stdcells.lib
+dfflibmap -liberty ../../cells/osu025_stdcells.lib
 
 # Eliminate unused nets and logic
 clean
@@ -29,4 +29,4 @@ clean
 show -format svg -prefix diagram
 
 # Write synthesized design output
-write_verilog breathing-led.vg
+write_verilog breathingled.vg
