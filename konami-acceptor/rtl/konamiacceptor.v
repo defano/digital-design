@@ -33,17 +33,17 @@ module konamiacceptor (
   parameter ACCEPT  = 4'd9;     // Input sequence accepted; user gets 40 lives
   parameter REJECT  = 4'd10;    // Input sequence rejected; user gets 3 lives
 
-   reg [3:0]   state;   
-   reg [24:0] timeout_ctr;
-   reg [1:0]  down_shift;
-   reg [1:0]  up_shift;
-   reg [1:0]  left_shift;
-   reg [1:0]  right_shift;
+  reg [3:0]  state;   
+  reg [24:0] timeout_ctr;
+  reg [1:0]  down_shift;
+  reg [1:0]  up_shift;
+  reg [1:0]  left_shift;
+  reg [1:0]  right_shift;
 
-   wire      down_debounced;
-   wire      up_debounced;
-   wire      left_debounced;
-   wire      right_debounced;
+  wire       down_debounced;
+  wire       up_debounced;
+  wire       left_debounced;
+  wire       right_debounced;
    
   wire [6:0] digit_0;
   wire [6:0] digit_1;

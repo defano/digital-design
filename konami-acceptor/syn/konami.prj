@@ -1,0 +1,4 @@
+verilog work "../rtl/konamiacceptor.v"
+verilog work "../rtl/displaydriver.v"
+verilog work "../rtl/debouncer.v"
+verilog work "../rtl/konamicoder.v"

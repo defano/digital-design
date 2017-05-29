@@ -1,5 +1,5 @@
 # Read design
-read_verilog rtl/konami-acceptor.v rtl/display-driver.v rtl/konami-coder.v
+read_verilog ../rtl/konamiacceptor.v ../rtl/displaydriver.v ../rtl/konamicoder.v ../rtl/debouncer.v
 hierarchy -check -top konamiacceptor
 
 # Map processes (sequential logic) and optimize
@@ -15,16 +15,16 @@ memory; opt
 techmap; opt
 
 # Prepare mapping flip-flops to osu025_stdcells
-dfflibmap -prepare -liberty ../cells/osu025_stdcells.lib
+dfflibmap -prepare -liberty ../../cells/osu025_stdcells.lib
 
 # Map combinatorial logic to cmos_cells
-abc -liberty ../cells/cmos_cells.lib
+abc -liberty ../../cells/cmos_cells.lib
 
 # Map flip-flops (sequential logic) to osu025_stdcells
-dfflibmap -liberty ../cells/osu025_stdcells.lib
+dfflibmap -liberty ../../cells/osu025_stdcells.lib
 
 # Eliminate unused nets and logic
 clean
 
 # Write synthesized design output
-write_verilog konami-acceptor.vg
+write_verilog konamiacceptor.vg
