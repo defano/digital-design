@@ -1,0 +1,4 @@
+verilog work "../rtl/uart.v"
+verilog work "../rtl/tx.v"
+verilog work "../rtl/rx.v"
+verilog work "../rtl/loopback.v"
