@@ -12,6 +12,8 @@ This section describes how to a program a Papilio's FPGA with a synthesized desi
 
 ## Steps
 
+Note that each of the sample projects can be loaded onto a Papilio Pro device using the `make papilio` target in the `syn/` directory of the project. The steps below describe the process in detail for those who run into trouble with the Makefile or wish to better understand the process.
+
 #### 1. Connect the Papilio via USB
 
 If you're running Linux in virtualization, you may need to add a USB port to your virtual machine. You will then likely need to grant the virtualized environment access to the device.

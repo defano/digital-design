@@ -10,6 +10,7 @@ all: bit
 netlist: yosys_installed
 	yosys -s synthesize.ys
 
+# Loads the programming file onto the Papilio Pro hardware
 papilio: ../papilio/$(PROJECT).bit
 	sudo papilio-prog -v -f ../papilio/$(PROJECT).bit
 
@@ -19,7 +20,7 @@ xst: xst_installed
 	-mkdir xst/projnav.tmp
 	xst -intstyle ise -ifn $(PROJECT).xst -ofn $(PROJECT).syr
 
-# Create Xilinx Native Database (internal representation) 
+# Create Xilinx Native Database (internal representation)
 ngd: ngdbuild_installed xst
 	ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc $(UCF) -p $(TARGET_DEVICE) $(PROJECT).ngc $(PROJECT).ngd
 
@@ -41,13 +42,13 @@ bit: bitgen_installed trace
 	bitgen -intstyle ise -f $(PROJECT).ut $(PROJECT).ncd
 	cp $(PROJECT).bit ../papilio/$(PROJECT).bit
 
+# Remove all derived sources
 clean:
 	-rm -rf _ngo
 	-rm -rf xlnx_auto_0_xdb
 	-rm -rf _xmsgs
 	-rm -rf xst
-	-rm *.svg *.vg *.dot *.xwbt *.bgn *.bit *.ut *.log *.drc *.syr *.ngd *.html *.xrpt *.bld *.lso *.map *.mrp *.ngm *.ncd *.ngc *.ngr *.pad *.csv *.txt *.par *.pcf *.ptwx *.twr *.twx *unroutes *.xml *.xpi 
-
+	-rm *.svg *.vg *.dot *.xwbt *.bgn *.bit *.ut *.log *.drc *.syr *.ngd *.html *.xrpt *.bld *.lso *.map *.mrp *.ngm *.ncd *.ngc *.ngr *.pad *.csv *.txt *.par *.pcf *.ptwx *.twr *.twx *unroutes *.xml *.xpi
 
 # Utility targets to check for proper tools installation
 BITGEN    := $(shell command -v bitgen 2> /dev/null)
