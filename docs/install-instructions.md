@@ -123,7 +123,7 @@ sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.0.8 /opt/Xilinx/14.7/
 
 #### 4. Fire it up
 
-As noted in the installation wizard, you must source a shell script (to configure environmental variables and whatnot) prior to running ISE WebPack.
+As noted in the installation wizard, you must source a shell script (to configure your path, environmental variables and whatnot) prior to running ISE WebPack.
 
 For Ubuntu users this should be as simple as:
 
@@ -134,16 +134,12 @@ $ source /opt/Xilinx/14.7/ISE_DS/settings32.sh
 Then, to run the tool:
 
 ```
-$ /opt/Xilinx/14.7/ISE_DS/ISE/bin/lin/ise
+$ ise
 ```
 
 Do not run ISE as superuser (various functions will not work).
 
-I find it convenient to combine both steps into an `ise` alias. Bash shell users can accomplish this by appending the following to their `~/.bashrc` file:
-
-```
-alias ise='source /opt/Xilinx/14.7/ISE_DS/settings32.sh;/opt/Xilinx/14.7/ISE_DS/ISE/bin/lin/ise'
-```
+I find it convenient to source `settings32.sh` from my login script (i.e., `~/.bashrc`). Various Makefiles and instructions found in these tutorials assume that this script has been sourced prior to executing any Xilinx-related instructions. 
 
 #### 5. Get a license
 

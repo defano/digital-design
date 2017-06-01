@@ -4,7 +4,7 @@ An introduction to designing, simulating and synthesizing digital hardware desig
 
 ## Hardware
 
-No hardware is required to experiment with circuit design and simulation. However, you'll need some hardware if you wish to realize your designs in electronic form. :)
+No hardware is required to experiment with circuit design and simulation. Of course, you'll need some if you wish to realize your designs in electronic form. :)
 
 This tutorial makes use of the [Papilio Pro](http://papilio.cc/index.php?n=Papilio.PapilioPro) and [Papilio LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) development boards. These can be purchased as a kit [for about $100.00 online](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/). The Papilio Pro contains a [Spartan 6 Xilinx FPGA](https://www.xilinx.com/products/silicon-devices/fpga/spartan-6.html) which will accept our circuit designs and the LogicStart Megawing provides various IOs (buttons, LEDs, a seven segment displays) to experiment with.
 
@@ -12,7 +12,7 @@ A detailed description (and schematic) of the [Papilio Pro hardware can be found
 
 #### Looking to test a brand new Papilio Pro?
 
-Looking for a known-good example with which to verify your hardware and setup? Each of the example projects include a pre-built `.bit` file that's ready to be programmed onto the FPGA.
+Looking for a known-good example with which to verify your hardware and setup? Each of the example projects include a pre-built `.bit` file that's ready to be programmed onto the Papilio Pro's Spartan 6 FPGA.
 
 Install the `papilio-prog` programmer ([instructions here](docs/install-instructions.md)), then program the device following [these instructions](docs/papilio-instructions.md).
 
