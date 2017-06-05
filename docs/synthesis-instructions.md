@@ -1,6 +1,6 @@
 # Implementing a Design for Xilinx Spartan 6
 
-This document describes how to implement a Verilog design on the Papilio Pro's Xilinx Spartan 6 (`xc6slx9-tqg144`) device.
+This document describes how to implement a Verilog design on the Papilio Pro's Xilinx Spartan 6 (`xc6slx9-tqg144`) FPGA.
 
 Note that each of the sample projects provide a Makefile (in their respective `syn/` directories) that will implement the design via the command line (use `$ make bit`). These Makefiles invoke the Xilinx command-line tools in a way that replicates the GUI process described below. See the [Makefile section](#synthesizing-with-make) for more details.
 
@@ -16,11 +16,11 @@ Note that each of the sample projects provide a Makefile (in their respective `s
 
 ## Introduction
 
-Recall that _synthesis_ is the process of converting Verilog's high-level language constructs into a network of flip-flops, logic gates, etc. that have a one-to-one correspondence with physical hardware elements present in the FPGA.
+Recall that _synthesis_ is the process of converting Verilog's high-level language constructs into a network of flip-flops, logic gates, etc. called a _netlist_.
 
-Of course, simply having a netlist representation of our design isn't quite the same as having a real, actual, working chip. There are several additional steps required to create a programming file that can be loaded onto an FPGA. This entire process—from Verilog to programming file—is called _design implementation_. While this tutorial will focus on implementing a design on a Xilinx FPGA, be aware that the process is similar for other programmable logic devices (and not all that different for ASICs, either).
+Of course, simply having a netlist representation of our design isn't quite the same as having a real, actual, working chip. There are several additional steps required to create a programming file that can be loaded onto an FPGA. This entire process—from Verilog to programming file—is called _design implementation_. This tutorial will focus on implementing a design on a Xilinx FPGA, but the process is similar for other programmable logic devices (and not all that different for ASICs, either).
 
-These are the steps required to implement a design on a Xilinx FPGA (additional details can be found on [Xilinx' website](https://www.xilinx.com/support/documentation/sw_manuals/xilinx14_4/ise_c_implement_fpga_design.htm)):
+These are the steps that Xilinx' Design Suite software executes to implement a design (additional details about these steps can be found on [Xilinx' website](https://www.xilinx.com/support/documentation/sw_manuals/xilinx14_4/ise_c_implement_fpga_design.htm)):
 
 1. Synthesize the design using the Xilinx Synthesis Technology (`xst`) tool.
 
@@ -30,11 +30,11 @@ These are the steps required to implement a design on a Xilinx FPGA (additional 
 
 4. Convert the (logical) native circuit description into a physical representation via a process called _place-and-route_ (using the `par` tool). Recall that the FPGA contains an "array" of gates. For each circuit element in your design, place-and-route identifies the specific, physical gate on the FPGA that will manifest it (_placement_) and the interconnections used to attach it to other elements (_routing_). This process results in a transformation of the NGD database.
 
-5. Execute the _Timing Report and Circuit Evaluation_ tool (called `trce`) to assure that your design meets timing constraints and will thusly behave correctly in hardware. For example, assure that the delay through combinatorial paths doesn't exceed the clock period; flip-flop setup and hold constraints are met, etc.
+5. Execute the _Timing Report and Circuit Evaluation_ tool (called `trce`) to assure that the design meets timing constraints and will thusly behave correctly in hardware. For example, assure that the delay through combinatorial paths doesn't exceed the clock period; flip-flop setup and hold constraints are met, etc.
 
 6. Generate a bitstream programming file (`.bit`) from the NGD database using the `bitgen` tool.
 
-Once a bitstream programming file has been generated it can be loaded on the Papilio using the `papilio-prog` tool ([described in detail here](papilio-instructions.md)) or loaded onto other hardware using a variety of other methods (such as via a JTAG programming cable).
+Once a bitstream programming file has been generated, it can be loaded on the Papilio using the `papilio-prog` tool ([described in detail here](papilio-instructions.md)), or loaded onto other hardware using a variety of other methods (using a JTAG programming cable, for example).
 
 #### A note about user constraints
 
@@ -58,6 +58,8 @@ CONFIG PROHIBIT=P60;
 
 NET CLK            LOC="P94"  | IOSTANDARD=LVTTL | PERIOD=31.25ns;          
 ```
+
+**Use care when authoring this file.** It's important that pins on the FPGA are connected correctly. Incorrect connections may produce short-circuits or other faults that could damage the FPGA or circuit board.
 
 ## Synthesizing with ISE Design Suite
 
@@ -87,7 +89,7 @@ Choose a location and name for your Design Suite project. There is no requiremen
 
 Click "Next"
 
-#### Step 3: Specify target device
+#### Step 3: Specify the target device
 
 Enter information about the FPGA device you intend to target the design to. For the Papilio Pro, enter the values (exactly) as shown below:
 
@@ -122,3 +124,5 @@ For good measure, check the warnings tab to assure the implementation process di
 ## Synthesizing with Make
 
 It is not strictly necessary to use the ISE graphical user interface to implement a circuit design. Xilinx provides a suite of complementary command-line tools. As a matter of fact, the GUI simply delegates to the command-line tools when performing various tasks. Note, however, that these command-line tools are part of ISE WebPack; you must still install this software even if you don't intend to use the actual ISE application.
+
+Each example project has a Makefile that executes `xst`, `ngdbuild`, `map`, `par`, `trce` and `bitgen` against the required project (`.prj`) and synthesis script (`.xst`) to produce a programming file.  
