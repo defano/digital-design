@@ -6,7 +6,8 @@ module uart(
     txdata,
     rxdata,
     rx_enable,
-    tx_enable);
+    tx_enable,
+    tx_ready);
 
    input        clk32;       // 32 Mhz clock input
    input        reset_;      // Reset
@@ -15,8 +16,9 @@ module uart(
    input  [7:0] txdata;      // Byte to be transmitted
    output [7:0] rxdata;      // Byte received
    output       rx_enable;   // When high, rxdata is ready
-   input        tx_enable;   // Set high to tell transmitter to send txdata
-
+   input        tx_enable;   // Set high to tell transmitter to send txdata, no affect when !tx_ready
+   output 	tx_ready;    // When high, device is ready to transmit
+	
    wire 	baud;
    wire 	sample;
 
@@ -46,6 +48,7 @@ module uart(
 	.baud(baud),
 	.txdata(txdata),
 	.tx_enable(tx_enable),
+	.tx_ready(tx_ready),
 	.tx(tx));
 
    // Serial receiver

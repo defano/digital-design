@@ -4,6 +4,7 @@ module tx (
     baud,
     txdata,
     tx_enable,
+    tx_ready,	   
     tx);
 
    input       clk;
@@ -11,19 +12,22 @@ module tx (
    input       baud;       // Baud enable
    input [7:0] txdata;     // Parallel data to transmit
    input       tx_enable;  // When asserted, txdata is sampled for transmission
+   output      tx_ready;   // Asserted when transmit complete (ready for next byte)
    output      tx;         // Serial transmit data
 
    reg 	       tx;
    reg [1:0]   state;
    reg [7:0]   txdata_sampled;
    reg [2:0]   txpos;   
-
+   
    // Transmitter states
    parameter ST_IDLE    = 2'd0;
    parameter ST_TXSTART = 2'd1;
    parameter ST_TXDATA  = 2'd2;
    parameter ST_TXSTOP  = 2'd3;
 
+   assign tx_ready = state == ST_IDLE;   
+   
    // State machine
    always@ (posedge clk or negedge reset_)
      if (!reset_)
@@ -61,7 +65,7 @@ module tx (
    always@ (posedge clk or negedge reset_)
      if (!reset_)
        txdata_sampled <= 8'h0;
-     else if (tx_enable)
+     else if (tx_enable && tx_ready)
        txdata_sampled <= txdata;
       
 endmodule

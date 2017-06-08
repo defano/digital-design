@@ -5,6 +5,7 @@ module testbench();
    wire       serial_loopback;
    wire [7:0] rxdata;
    wire       rx_enable;
+   wire       tx_ready;       
    
    reg [7:0]  txdata;
    reg 	      tx_enable;
@@ -19,7 +20,8 @@ module testbench();
 	    .txdata(txdata),
 	    .rxdata(rxdata),
 	    .rx_enable(rx_enable),
-	    .tx_enable(tx_enable));
+	    .tx_enable(tx_enable),
+	    .tx_ready(tx_ready));
 
    // Generate VCD waveform
    initial begin
