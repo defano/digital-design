@@ -2,10 +2,10 @@ module konamiacceptor (
   clk,
   reset_,
 
-  up,
-  down,
-  left,
-  right,
+  up_,
+  down_,
+  left_,
+  right_,
 
   segment_,
   digit_enable_
@@ -13,10 +13,10 @@ module konamiacceptor (
 
   input clk;
   input reset_;
-  input up;
-  input down;
-  input left;
-  input right;
+  input up_;
+  input down_;
+  input left_;
+  input right_;
 
   output [6:0] segment_;
   output [3:0] digit_enable_;
@@ -60,28 +60,28 @@ module konamiacceptor (
   debouncer down_debouncer(
     .clk(clk),
     .reset_(reset_),
-    .raw(down),
+    .raw(~down_),
     .debounced(down_debounced)			   
   );
    
   debouncer up_debouncer(
     .clk(clk),
     .reset_(reset_),
-    .raw(up),
+    .raw(~up_),
     .debounced(up_debounced)			   
   );
    
   debouncer left_debouncer(
     .clk(clk),
     .reset_(reset_),
-    .raw(left),
+    .raw(~left_),
     .debounced(left_debounced)			   
   );
    
   debouncer right_debouncer(
     .clk(clk),
     .reset_(reset_),
-    .raw(right),
+    .raw(~right_),
     .debounced(right_debounced)			   
   );
    

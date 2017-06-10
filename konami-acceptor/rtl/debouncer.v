@@ -9,7 +9,7 @@ module debouncer(
    input      raw;
    output     debounced;
 
-   reg [13:0] counter;
+   reg [7:0]  counter;
    reg 	      debounced;
    reg 	      sampled;
    
@@ -21,16 +21,16 @@ module debouncer(
 	        
    always@ (posedge clk or negedge reset_)
      if (!reset_)
-       counter <= 14'd0;
+       counter <= 8'd0;
      else if (raw != sampled)
-       counter <= 14'd0;
+       counter <= 8'd0;
      else
-       counter <= counter + 14'd1;
+       counter <= counter + 8'd1;
       
    always@ (posedge clk or negedge reset_)
      if (!reset_)
        debounced <= 1'b0;
-     else if (counter == 14'h7fff)
+     else if (counter == 8'hff)
        debounced <= sampled;
    
 endmodule

@@ -26,20 +26,20 @@ CONFIG PROHIBIT=P144;
 CONFIG PROHIBIT=P69;
 CONFIG PROHIBIT=P60;
 
-NET CLK                  LOC="P94"  | IOSTANDARD=LVTTL | PERIOD=31.25ns;               # CLK
-NET up                   LOC="P50"  | IOSTANDARD=LVTTL;                                # A0
-NET down                 LOC="P55"  | IOSTANDARD=LVTTL;                                # A0
-NET left                 LOC="P57"  | IOSTANDARD=LVTTL;                                # A0
-NET right                LOC="P59"  | IOSTANDARD=LVTTL;                                # A0
-NET digit_enable_(3)     LOC="P48"  | IOSTANDARD=LVTTL;                                # A0
-NET digit_enable_(2)     LOC="P56"  | IOSTANDARD=LVTTL;                                # A2
-NET segment_(4)          LOC="P58"  | IOSTANDARD=LVTTL;                                # A3
-NET segment_(5)          LOC="P61"  | IOSTANDARD=LVTTL;                                # A4
-NET segment_(2)          LOC="P66"  | IOSTANDARD=LVTTL;                                # A5
-NET segment_(3)          LOC="P67"  | IOSTANDARD=LVTTL;                                # A6
-NET segment_(0)          LOC="P75"  | IOSTANDARD=LVTTL;                                # A7
-NET digit_enable_(1)     LOC="P79"  | IOSTANDARD=LVTTL;                                # A8
-NET segment_(6)          LOC="P81"  | IOSTANDARD=LVTTL;                                # A9
-NET segment_(1)          LOC="P83"  | IOSTANDARD=LVTTL;                                # A10
-NET digit_enable_(0)     LOC="P85"  | IOSTANDARD=LVTTL;                                # A11
-NET reset_               LOC="P114" | IOSTANDARD=LVTTL;                                # C0
+NET CLK                  LOC="P94"  | IOSTANDARD=LVTTL | PERIOD=31.25ns;
+NET up_                  LOC="P50"  | IOSTANDARD=LVTTL;
+NET down_                LOC="P55"  | IOSTANDARD=LVTTL;
+NET left_                LOC="P57"  | IOSTANDARD=LVTTL;
+NET right_               LOC="P59"  | IOSTANDARD=LVTTL;
+NET digit_enable_(3)     LOC="P48"  | IOSTANDARD=LVTTL;
+NET digit_enable_(2)     LOC="P56"  | IOSTANDARD=LVTTL;
+NET segment_(4)          LOC="P58"  | IOSTANDARD=LVTTL;
+NET segment_(5)          LOC="P61"  | IOSTANDARD=LVTTL;
+NET segment_(2)          LOC="P66"  | IOSTANDARD=LVTTL;
+NET segment_(3)          LOC="P67"  | IOSTANDARD=LVTTL;
+NET segment_(0)          LOC="P75"  | IOSTANDARD=LVTTL;
+NET digit_enable_(1)     LOC="P79"  | IOSTANDARD=LVTTL;
+NET segment_(6)          LOC="P81"  | IOSTANDARD=LVTTL;
+NET segment_(1)          LOC="P83"  | IOSTANDARD=LVTTL;
+NET digit_enable_(0)     LOC="P85"  | IOSTANDARD=LVTTL;
+NET reset_               LOC="P114" | IOSTANDARD=LVTTL;
