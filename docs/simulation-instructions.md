@@ -1,6 +1,6 @@
 # Simulating a Design
 
-This section describes how to simulate a Verilog circuit using Icarus Verilog and view the resulting VCD waveforms in GTKWave.
+This section describes how to simulate a Verilog design using Icarus Verilog and then view the resulting VCD waveforms in GTKWave.
 
 ## Prerequisites
 
@@ -14,21 +14,26 @@ This section describes how to simulate a Verilog circuit using Icarus Verilog an
 
 Note that each of the sample projects already have Makefiles that will execute the simulator and produce a waveform output (via `make waveform`); this section is intended for those interested in the command-line details of Icarus Verilog.
 
-Simulating a design with Icarus Verilog (and most other modern Verilog simulators, too) is a two-step process: 1) Cross-compiling the Verilog design into an intermediate representation optimized for execution, and 2) Executing the simulation. Icarus Verilog provides two command-line tools to achieve this process: `iverilog` and `vvp`.
+Simulating a design with Icarus Verilog (and most other modern Verilog simulators, too) is a two-step process:
+
+1. Cross-compiling the Verilog design into an intermediate representation optimized for execution, and
+2. Executing the simulation from the intermediate representation.
+
+Icarus Verilog provides two command-line tools to achieve this process: `iverilog` and `vvp`.
 
 #### Step 1: Compile the design
 
-Use the `iverilog` command to compile your Verilog sources (including testbench/es) into Icarus Verilog's internal representation, called VVP.
+Use the `iverilog` command to compile your Verilog sources (including testbench and/or other test-related sources) into Icarus Verilog's internal representation, called VVP.
 
-For example, the Knight Rider project has one RTL source file (`rtl/knightrider.v`) and one testbench file (`test/testbench.vt`). We could compile this to `simulation.vvp` using the command:
+For example, the Knight Rider project has one RTL source file (`rtl/knightrider.v`) and one testbench file (`test/testbench.vt`). We would compile this to `simulation.vvp` using the command:
 
 ```
 $ iverilog -o simulation.vvp rtl/knightrider.v test/testbench.vt
 ```
 
-Note that the order of source files is unimportant: The testbench doesn't need be listed last, and there is no special switch or convention to specify which file represents the "top" of the design hierarchy (the tool will figure that out for itself).
+Note that the order of source files is unimportant. The testbench doesn't need be listed last, and there is no special switch or convention to specify which file represents the "top" of the design hierarchy (the tool will figure that out for itself).
 
-Alterntely, its possible to use the `-y` switch to tell `iverilog` to use all of the source files it finds in given directory. See the `man` page for details.
+Alternately, its possible to use the `-y` switch to tell `iverilog` to use all of the source files it finds in given directory. See the `man` page for details.
 
 Icarus Verilog will produce no console output (unless it detects an error or warning) and will write the compiled output to `simulation.vvp`. With this, we're ready to execute the simulation.
 
@@ -44,7 +49,7 @@ The simulation will produce whatever output is created by executing it (i.e., vi
 
 ##### Stopping a simulation
 
-To break out of a running simulation, type `Ctrl-C` to interrupt the simulation. This will produce a simulator prompt, like:
+To break out of a running simulation, interrupt the `vvp` process by typing `Ctrl-C` at the console actively executing the simulator. This will produce a simulator prompt, like:
 
 ```
 ** VVP Stop(0) **
@@ -53,11 +58,11 @@ To break out of a running simulation, type `Ctrl-C` to interrupt the simulation.
 > _
 ```
 
-Then, type `$finish` at the prompt to exit the simulation (or `Ctrl-D` to resume).
+Then, type `$finish` at the prompt to exit the simulation (or type `Ctrl-D` to resume the simulation).
 
 ## Viewing waveform output
 
-Note that waveform output is not automatically produced simply as a result of executing a simulation. The `$dumpvars()` system task (usually in conjunction with the `$dumpfile()` task) must be invoked for the simulator to generate a waveform (`.vcd`) file.
+Be aware that waveform output is not automatically produced simply as a result of executing a simulation. The `$dumpvars()` system task (usually in conjunction with the `$dumpfile()` task) must be invoked for the simulator to generate a waveform (`.vcd`) file.
 
 Start the GTKWave waveform viewer, with:
 
@@ -67,7 +72,7 @@ $ gtkwave
 
 ### Loading the waveforms
 
-Load the waveform you created in simulation by choosing "File" -> "Open new Tab" and selecting the VCD file:
+Load the waveform you created in simulation by choosing "File" -> "Open new Tab" and selecting the VCD file. Alternately, you can launch `gtkwave` with a waveform initially loaded by passing the name of the VCD file to `gtkwave` as an argument, like `$gtkwave waveform.vcd`.
 
 ![GTKWave](images/sim.png)
 
