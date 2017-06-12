@@ -2,6 +2,8 @@
 
 An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language with open-sourced tools and hardware. This tutorial consists of several hardware designs which can be synthesized and loaded onto [GadgetFactory's Papilio](http://papilio.cc) hardware.
 
+See the [Introduction to Digital Design](introduction-to-digital-design.pdf) slides (from the 2017 Chicago Coder Conference) for a refresher on chip design with Verilog.
+
 ## Hardware
 
 No hardware is required to experiment with circuit design and simulation. Of course, you'll need some if you wish to realize your designs in electronic form. :)
