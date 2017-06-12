@@ -27,7 +27,7 @@ module testbench;
 
   microblaze uut(
     .clk(clk),
-    .reset_(resetl),
+    .reset_(reset_),
     .led(leds)
   );
 

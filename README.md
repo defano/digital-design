@@ -27,7 +27,7 @@ Each of the [example projects](#example-projects) contains RTL source code; a te
 
 ## Example Projects
 
-Listed in ascending order of complexity.
+Projects are listed in ascending order of complexity.
 
 Project | Description
 --------|---------------------------
@@ -36,4 +36,5 @@ Project | Description
 [Seven Segment Counter](seven-segment-counter/) | A slightly more complicated project that drives all four seven-segment digits on the LogicStart with a rapidly incrementing base-10 count.
 [Konami Acceptor](konami-acceptor/) | A simple state machine that listens to d-pad inputs on the LogicStart MegaWing to detect the famous Konami sequence, up-up-down-down-left-right-left-right.
 [Serial Communications UART](uart/) | Implementation of a serial communications UART; allows the Papilio to communicate with a host PC using a serial communications terminal like PuTTY or minicom.
-[Microblaze Microcontroller](microblaze/) | Instructions for creating a basic "system on a chip" design, including the Xilinx Microblaze CPU, 16KB of internal "block" RAM, a general purpose output module for controlling LEDs, and an embedded software project to drive it.
+[Microblaze Microcontroller](microblaze/) | Instructions for creating a basic "system on a chip" design that includes the Xilinx Microblaze CPU, 16KB of internal "block" RAM, a general purpose output module for controlling LEDs and an embedded software project to drive it.
+[LogicStart Microcontroller](lsuc/) | This one's for all the marbles. A demonstration of controlling custom hardware components in software using a MicroBlaze CPU with IO bus integration to the UART, 7-segment displays, d-pad, toggle switches and LEDs. Provides hardware control via a terminal interface.

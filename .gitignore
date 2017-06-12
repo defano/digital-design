@@ -3,3 +3,6 @@
 .*
 
 *.log
+
+lsuc/src/firmware/Debug/*
+
