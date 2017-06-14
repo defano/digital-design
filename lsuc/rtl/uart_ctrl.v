@@ -28,18 +28,18 @@ module uart_ctrl (
    reg          rdy;
    reg  [7:0]   rd_data;
 
-   wire   wr_enable;
-   wire   rd_enable;
+   wire         wr_enable;
+   wire         rd_enable;
 
-   reg           tx_enable;
-   reg  [7:0]    tx_data;
-   reg  [7:0]    rx_data_reg;
-   reg  [15:0]   tx_count;
-   reg  [15:0]   rx_count;
+   reg          tx_enable;
+   reg  [7:0]   tx_data;
+   reg  [7:0]   rx_data_reg;
+   reg  [15:0]  tx_count;
+   reg  [15:0]  rx_count;
 
-   wire          tx_ready;
-   wire [7:0]    rx_data;
-   reg           rx_ready;
+   wire         tx_ready;
+   wire [7:0]   rx_data;
+   reg          rx_ready;
 
    // Software addressable registers
    parameter TX_BYTE_REG        = 8'd0;
