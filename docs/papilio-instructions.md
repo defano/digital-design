@@ -1,4 +1,4 @@
-# Loading a Circuit on the Papilio
+# Programming the Papilio FPGA with a Circuit Design
 
 This section describes how to a program a Papilio's FPGA with a Xilinx bitstream programming file (`.bit` file).
 
@@ -12,7 +12,7 @@ This section describes how to a program a Papilio's FPGA with a Xilinx bitstream
 
 ## Steps
 
-Note that each of the sample projects can be loaded onto a Papilio Pro device using the `make papilio` target in the `syn/` directory of the project. The steps below describe the process in detail for those who run into trouble with the Makefile or wish to better understand the process.
+Note that each of the sample projects (except for the two microcontroller projects) can be loaded onto a Papilio Pro device using the `make papilio` target in the `syn/` directory of the project. The steps below describe the process in detail for those who run into trouble with the Makefile or wish to better understand the process.
 
 #### 1. Connect the Papilio via USB
 

@@ -1,19 +1,17 @@
-# Microblaze System-on-a-Chip
+# MicroBlaze Microcontroller
 
-In this project, we'll create a microcontroller "system on a chip" by creating a design that incorporates a Xilinx Microblaze CPU, 16KB of "block" RAM (memory that's onboard the FPGA), a general purpose output (_GPO_) module to control LEDs via software, and the firmware that will control it.
+In this project, we'll create a microcontroller "system on a chip" by creating a design that incorporates a Xilinx MicroBlaze CPU, 16KB of "block" RAM (memory that's embedded inside the FPGA), a general purpose output (_GPO_) module to control LEDs via software, and the firmware that will control it.
 
-Upon completion, you will have designed have a full computer inside a single chip.
+This is not a trivial exercise. There are quite a few steps involved and each has very little margin for error. It is important that projects are created in the locations described and named identically to what is shown. Be sure to follow these instructions carefully. Even minor deviations in naming or configuration will prevent this from working. And when it doesn't, don't expect helpful error messages or warnings to guide you along the way. This toolchain is not beginner friendly.
 
-This is not a trivial exercise, and its a bit like launching a rocket to the moon: There are quite a few steps involved, and each has very little margin for error. Be sure to follow these instructions carefully. Even minor deviations in naming or configuration will prevent this from working. And when it doesn't, it just won't. Don't expect helpful error messages or warnings to guide you along the way; the toolchain is not beginner friendly.
-
-You've been warned. Stick with the script until you've got a good sense of what you're doing...
+**You've been warned.** Stick with the script until you've got a good sense of what you're doing...
 
 ## Overview
 
 Here are the steps we'll follow to complete our design:
 
 1. [Setup the environment](#setup)
-2. [Generate the Microblaze CPU core](#create-the-microblaze-core)
+2. [Generate the MicroBlaze CPU core](#create-the-microblaze-core)
 3. [Create the firmware](#create-the-firmware)
 4. [Run a simulation](#simulate) (of our hardware and software)
 5. [Synthesize the design](#synthesize-the-design)
@@ -23,18 +21,18 @@ Here are the steps we'll follow to complete our design:
 
 There are a couple problems with our toolset that we need to resolve before getting started:
 
-### Link `gmake` to `make`
+#### Link `gmake` to `make`
 
 The Xilinx software development kit (`xsdk`) that we'll be using expects to be able to call `gmake` (GNU Make) instead of the system `make`. For Ubuntu, the difference is irrelevant and the problem is easily solved with a link:
 ```
 $ sudo ln -s /usr/bin/make /usr/bin/gmake
 ```
 
-### Upgrading a buggy iVerilog
+#### Check for a buggy iVerilog
 
-As of this writing, the version of Icarus Verilog that's released and made available to Ubuntu through the `apt` repositories (and which you were instructed to install in the software installation procedure) contains a bug that prevents it from simulating Xilinx' block memory models. A fix is available, but we'll need to upgrade our `iverilog` tool the old fashioned way: by downloading and compiling the source code.
+Versions of Icarus Verilog older than 10.x contain a bug that prevents it from simulating Xilinx' block memory models. (This issue would not have manifested itself in earlier tutorials.) Check the version of `iverilog` before continuing (by inspecting the first line of the `man` page, `$ man iverilog`).
 
-I had little trouble getting this to work, but it does take a few minutes. This will overwrite the version you may have previously installed with `apt`:
+If you've got an old version of `iverilog` you can attempt to upgrade with `sudo apt upgrade`. If your package manager isn't able to install Icarus Verilog 10 or better, you can manually build and install the tool from source:
 
 1. Download the source code by navigating to a directory where you'd like to store it, then:
 ```
@@ -62,13 +60,13 @@ $ make
 $ sudo make install
 ```
 
-## Create the Microblaze Core
+## Create the MicroBlaze Core
 
 A _core_ is the integrated circuit equivalent of a library in software. That is, it's a black box circuit developed by a third party which we instantiate and use inside our own circuit without regard for the implementation details. It's IO port definition is, essentially, its API.
 
 Unlike software libraries, Xilinx' cores are not one-size-fits-all; we don't simply include them in our project. They are configured specifically for our use then dynamically generated using the "Xilinx Core Generator" tool.
 
-[Microblaze](https://en.wikipedia.org/wiki/MicroBlaze) is a microprocessor design from Xilinx that is "easily" incorporated into an FPGA and even includes a simulation model that will let us simulate our design and watch the execution of our firmware. Note, however, that unlike the other Verilog RTL we've used in previous projects, this Verilog is intended purely for simulation. The code contained within is _not_ synthesizable and is _not_ used when generating the FPGA programming file. (Xilinx uses some "secret sauce" unrelated to Verilog to instantiate the Microblaze inside the FPGA.)
+[MicroBlaze](https://en.wikipedia.org/wiki/MicroBlaze) is a microprocessor design from Xilinx that is "easily" incorporated into an FPGA and even includes a simulation model that will let us simulate our design and watch the execution of our firmware. Note, however, that unlike the other Verilog RTL we've used in previous projects, this Verilog is intended purely for simulation. The code contained within is _not_ synthesizable and is _not_ used when generating the FPGA programming file. (Xilinx uses some "secret sauce" unrelated to Verilog to instantiate the MicroBlaze inside the FPGA.)
 
 1. Open the Xilinx `coregen` tool with `$ coregen`. If it seems that command doesn't exist (or isn't in your path) then you likely haven't installed Xilinx ISE Webpack or sourced the setup shell script described in the software setup instructions. Otherwise, you should momentarily be presented with this screen:
 <br><br>![Coregen](doc/coregen/1.png)
@@ -79,9 +77,9 @@ Unlike software libraries, Xilinx' cores are not one-size-fits-all; we don't sim
 <br><br>![Part Options](doc/coregen/2.png)
 <br><br>![Generation Options](doc/coregen/3.png)
 
-4. Close the project options by clicking "OK", then find the Microblaze core within the available library of Xilinx-provided cores. Fastest way to do this is to type `microblaze` into the "Search IP Catalog" field.
+4. Close the project options by clicking "OK", then find the MicroBlaze core within the available library of Xilinx-provided cores. Fastest way to do this is to type `microblaze` into the "Search IP Catalog" field.
 
-5. Double-click on the "Microblaze MCS 1.4" element in the library tree. This will display the core's configuration options. Enter these options _exactly_ as shown (paying close attention to the change in input clock frequency, memory size and enabling the trace bus):
+5. Double-click on the "MicroBlaze MCS 1.4" element in the library tree. This will display the core's configuration options. Enter these options _exactly_ as shown (paying close attention to the change in input clock frequency, memory size and enabling the trace bus):
 <br><br>![MCS Options](doc/coregen/4.png)
 
 6. Click the "GPO" tab to view general purpose output configuration and enter these options exactly as shown:
@@ -187,9 +185,9 @@ Want further proof that things are working? Open the generated waveform (`$ gtkw
 
 ![Waveform](doc/sim/1.png)
 
-#### Simulating the Microblaze model
+#### Simulating the MicroBlaze model
 
-The Microblaze simulation model (`core/microblaze_mcs_v1_4.v`) that was generated by the `coregen` tool is "structural" in nature; that is, rather than describing the CPU's behavior in straight RTL terms (i.e., with `assign` and `always@` statements), it defines the CPU in terms of other components (called _cells_) that are part of Xilinx' library. We need to make these cells available to Icarus Verilog in order for it to simulate.
+The MicroBlaze simulation model (`core/microblaze_mcs_v1_4.v`) that was generated by the `coregen` tool is "structural" in nature; that is, rather than describing the CPU's behavior in straight RTL terms (i.e., with `assign` and `always@` statements), it defines the CPU in terms of other components (called _cells_) that are part of Xilinx' library. We need to make these cells available to Icarus Verilog in order for it to simulate.
 
 There are three Xilinx cell library directories that must pass to `iverilog` when we invoke the simulator (using the `-y` command line switch):
 
@@ -203,7 +201,7 @@ Finally, there's a bit of "global" logic that's required to initialize/reset Xil
 
 #### Initializing memory with our code
 
-In order to run a simulation of our firmware executing on the Microblaze CPU, we have to load our code into memory. Xilinx' BRAM memory models are designed to do just this. At the start of the simulation, they will attempt to initialize themselves by loading data from `.mem` files (an industry standard for describing the contents of a memory).
+In order to run a simulation of our firmware executing on the MicroBlaze CPU, we have to load our code into memory. Xilinx' BRAM memory models are designed to do just this. At the start of the simulation, they will attempt to initialize themselves by loading data from `.mem` files (an industry standard for describing the contents of a memory).
 
 Xilinx provides a tool called `data2mem` that will convert our compiled firmware from [ELF format](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) to `.mem`, named in the convention expected by the memory models. Executing `make memory` (a subtask of `simulate`) will generate these files in the root directory of the tutorial.
 
@@ -217,7 +215,7 @@ Now that we've proven the correctness of our design through simulation, we're re
 
 2. Add the top-level design (`rtl/microblaze.v`) and the Papilio Pro UCF (`papilio/papilio-pro.ucf`) sources to the project.
 
-3. Include the Microblaze in the design by adding the `core/microblaze_mcs_v1_4.xco` core specification file to the hierarchy (**do not** add the `.v` simulation file). Your project hierarchy should look like:
+3. Include the MicroBlaze in the design by adding the `core/microblaze_mcs_v1_4.xco` core specification file to the hierarchy (**do not** add the `.v` simulation file). Your project hierarchy should look like:
 <br><br>![Project Workspace](doc/ise/1.png)
 
 4. At the bottom of the ISE project window, select the "Tcl Console" tab. If no such tab is visible, choose "View" -> "Panels" -> "Tcl Console" from the menubar to show it. Then, in the "Command >" field at the bottom of the panel, enter `source ../core/microblaze_mcs_setup.tcl`. This will perform some custom configuration of the ISE synthesis process specific to using this core and will cause the translate process to generate a special, post-place-and-route `.bmm` file that we'll use to create the final programming file. If this step succeeds, you'll see the following printed in the Tcl Console:

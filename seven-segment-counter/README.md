@@ -1,13 +1,19 @@
-# Seven Segment Counter
+# Seven-Segment Counter
 
 A circuit that displays a rapidly incrementing value on the four-digit seven-segment displays found on the Papilio LogicStart MegaWing hardware.
 
-This is slightly more complicated than one might expect:
+This is slightly more complicated than one might expect.
 
-Our hardware has four seven-segment displays that, together, are equipped only with 7 segment pins (segment_[6:0]) and 4 enable pins (digit_enable_[3:0]). This means we can't "drive" all four digits independently all at the same time (as you might have assumed we could--that would require 28 signals). Instead, we drive each digit for a fraction of a second, then move on to the next digit. This cycling occurs too quickly to be seen by the human eye.
+#### Theory of operation
 
-To make matters worse, we need to give the circuit some time to "cool off" between driving one digit and the next. If we don't, we'll see flickering and ghosting of the previous digit's value.
+Our hardware has four seven-segment displays that, together, are equipped with only 7 segment pins (`segment_[6:0]`) and 4 enable pins (`digit_enable_[3:0]`). This means we can't "drive" all four digits independently at the same time (as you might have assumed we could--that would require 28 signals). Instead, we drive each digit for a fraction of a second, then move on to the next digit. This cycling occurs too quickly to be seen by the human eye.
 
+To complicate this further, we need to give the circuit some time to "cool off" between driving one digit and the next. If we don't, we'll see flickering and ghosting of the adjacent digit's value.
+
+#### Suggested modifications
+
+* (Harder) Instead of displaying a counter, modify the design to count some user-generated event (like the number of times a switch is toggled or a d-pad key is pressed).
+* (Harder) Rather than incrementing a base-10 count, modify the design to display a base-16 count. You'll need to swap out the _binary-coded decimal_ encoder for a _binary-coded hex_ encoder of your own creation.
 
 ## Makefile
 

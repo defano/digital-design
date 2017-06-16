@@ -6,11 +6,11 @@ See the [Introduction to Digital Design](introduction-to-digital-design.pdf) sli
 
 ## Hardware
 
-No hardware is required to experiment with circuit design and simulation. Of course, you'll need some if you wish to realize your designs in electronic form. :)
+No special hardware is needed to simulate circuit designs, but to fully realize your work in electronic form you'll want your own [Papilio Pro](http://papilio.cc/index.php?n=Papilio.PapilioPro) and [Papilio LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) development boards. I recommend purchasing them together as a kit [for about $100.00 online](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/).
 
-This tutorial makes use of the [Papilio Pro](http://papilio.cc/index.php?n=Papilio.PapilioPro) and [Papilio LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) development boards. These can be purchased as a kit [for about $100.00 online](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/). The Papilio Pro contains a [Spartan 6 Xilinx FPGA](https://www.xilinx.com/products/silicon-devices/fpga/spartan-6.html) which will accept our circuit designs and the LogicStart Megawing provides various IOs (buttons, LEDs, a seven segment displays) to experiment with.
+The Papilio Pro contains a [Spartan 6 Xilinx FPGA](https://www.xilinx.com/products/silicon-devices/fpga/spartan-6.html) which will accept our circuit designs. The LogicStart Megawing is a daughter board that plugs into the Papilio Pro and provides various buttons, switches, LEDs, and seven-segment displays to experiment with.
 
-A detailed description (and schematic) of the [Papilio Pro hardware can be found here](http://papilio.cc/index.php?n=Papilio.PapilioPro); the [LogicStart Megawing, here](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing).
+A detailed description (and schematics) of both boards can be found on GadgetFactory's website. (Technical documents: [Papilio Pro ](http://papilio.cc/index.php?n=Papilio.PapilioPro) | [LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing))
 
 #### Looking to test a brand new Papilio Pro?
 
@@ -20,7 +20,7 @@ Install the `papilio-prog` programmer ([instructions here](docs/install-instruct
 
 ## Getting Started
 
-Each of the [example projects](#example-projects) contains RTL source code; a test bench to verify the design and generate simulation waveforms; a synthesis script for translating your design into a gate-level netlist (just for fun--not otherwise used); a Papilio Pro user constraints file (`UCF`) defining a mapping of physical pins on the FPGA to inputs/outputs in our designs; and a pre-built `.bit` file that can be immediately loaded onto the Papilio Pro without having to run Xilinx' ISE software.
+Each of the [example projects](#example-projects) contains RTL source code; a test bench to provide stimulus to the design and generate simulation waveforms; a synthesis script for translating your design into a gate-level netlist (just for fun--not otherwise used); a Papilio Pro user constraints file (`UCF`) defining a mapping of physical pins on the FPGA to inputs/outputs in our designs; and a pre-built `.bit` file that can be immediately loaded onto the Papilio Pro without having to run Xilinx' ISE software.
 
 1. [Instructions for installing open source tools](docs/install-instructions.md)
 2. [Instructions for simulating designs and viewing waveforms](docs/simulation-instructions.md)

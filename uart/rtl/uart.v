@@ -17,8 +17,8 @@ module uart(
    output [7:0] rxdata;      // Byte received
    output       rx_enable;   // When high, rxdata is ready
    input        tx_enable;   // Set high to tell transmitter to send txdata, no affect when !tx_ready
-   output 	tx_ready;    // When high, device is ready to transmit
-	
+   output 	    tx_ready;    // When high, device is ready to transmit
+
    wire 	baud;
    wire 	sample;
 
@@ -77,5 +77,5 @@ module uart(
        sample_ctr <= 5'd0;
      else
        sample_ctr <= sample_ctr + 5'd1;
-   
+
 endmodule
