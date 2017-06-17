@@ -1,26 +1,26 @@
 # Introduction to Digital Design
 
-An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language with open-sourced tools and hardware. This tutorial consists of several hardware designs which can be synthesized and loaded onto [GadgetFactory's Papilio](http://papilio.cc) hardware.
+An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language using open-sourced tools and hardware. This tutorial consists of several hardware designs which can be implemented (synthesized) and loaded onto [GadgetFactory's Papilio](http://papilio.cc) hardware.
 
-See the [Introduction to Digital Design](introduction-to-digital-design.pdf) slides (from the 2017 Chicago Coder Conference) for a refresher on chip design with Verilog.
+See the [Introduction to Digital Design](introduction-to-digital-design.pdf) slides from the 2017 Chicago Coder Conference for a refresher on chip design with Verilog.
 
 ## Hardware
 
 No special hardware is needed to simulate circuit designs, but to fully realize your work in electronic form you'll want your own [Papilio Pro](http://papilio.cc/index.php?n=Papilio.PapilioPro) and [Papilio LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) development boards. I recommend purchasing them together as a kit [for about $100.00 online](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/).
 
-The Papilio Pro contains a [Spartan 6 Xilinx FPGA](https://www.xilinx.com/products/silicon-devices/fpga/spartan-6.html) which will accept our circuit designs. The LogicStart Megawing is a daughter board that plugs into the Papilio Pro and provides various buttons, switches, LEDs, and seven-segment displays to experiment with.
+The Papilio Pro contains a [Xilinx Spartan 6  FPGA](https://www.xilinx.com/products/silicon-devices/fpga/spartan-6.html) that will accept our circuit designs. The LogicStart Megawing is a daughter board that plugs into the Papilio Pro and provides various buttons, switches, LEDs, and seven-segment displays to experiment with.
 
-A detailed description (and schematics) of both boards can be found on GadgetFactory's website. (Technical documents: [Papilio Pro ](http://papilio.cc/index.php?n=Papilio.PapilioPro) | [LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing))
+A detailed description (and schematics) of both boards can be found on GadgetFactory's website. ([Papilio Pro ](http://papilio.cc/index.php?n=Papilio.PapilioPro) | [LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing))
 
 #### Looking to test a brand new Papilio Pro?
 
-Looking for a known-good example with which to verify your hardware and setup? Each of the example projects include a pre-built `.bit` file that's ready to be programmed onto the Papilio Pro's Spartan 6 FPGA.
+Looking for a known-good example with which to verify your setup? Each of the example projects include a pre-built `.bit` file that's ready to be programmed onto the Papilio Pro's Spartan 6 FPGA.
 
 Install the `papilio-prog` programmer ([instructions here](docs/install-instructions.md)), then program the device following [these instructions](docs/papilio-instructions.md).
 
 ## Getting Started
 
-Each of the [example projects](#example-projects) contains RTL source code; a test bench to provide stimulus to the design and generate simulation waveforms; a synthesis script for translating your design into a gate-level netlist (just for fun--not otherwise used); a Papilio Pro user constraints file (`UCF`) defining a mapping of physical pins on the FPGA to inputs/outputs in our designs; and a pre-built `.bit` file that can be immediately loaded onto the Papilio Pro without having to run Xilinx' ISE software.
+Each of these [example projects](#example-projects) contain Verilog RTL source code; a testbench to provide stimulus to the design and generate simulation waveforms; a synthesis script for translating the design into a gate-level netlist (just for fun--not otherwise used); a user constraints file (`UCF`) defining a mapping of physical pins on the Papilio Pro's FPGA to inputs/outputs in our designs; and a pre-built `.bit` file that can be immediately loaded onto the Papilio Pro without having to run Xilinx' ISE software.
 
 1. [Instructions for installing open source tools](docs/install-instructions.md)
 2. [Instructions for simulating designs and viewing waveforms](docs/simulation-instructions.md)
@@ -28,6 +28,8 @@ Each of the [example projects](#example-projects) contains RTL source code; a te
 4. [Instructions for loading synthesized designs onto the Papilio board](docs/papilio-instructions.md)
 
 ## Example Projects
+
+I find that the best way to learn a new language or technology is to experiment with a working example. Each of these projects offers a sandbox to play in. Simulate the design; view the waveforms; figure out what's happening; and see if you can make the recommended modifications. You'll be ready to create your own from scratch in no time!
 
 Projects are listed in ascending order of complexity.
 
@@ -39,4 +41,4 @@ Project | Description
 [Konami Acceptor](konami-acceptor/) | A simple state machine that listens to d-pad inputs on the LogicStart MegaWing to detect the famous Konami sequence, up-up-down-down-left-right-left-right.
 [Serial Communications UART](uart/) | Implementation of a serial communications UART; allows the Papilio to communicate with a host PC using a serial communications terminal like PuTTY or minicom.
 [Microblaze Microcontroller](microblaze/) | Instructions for creating a basic "system on a chip" design that includes the Xilinx Microblaze CPU, 16KB of internal "block" RAM, a general purpose output module for controlling LEDs and an embedded software project to drive it.
-[LogicStart Microcontroller](lsuc/) | This one's for all the marbles! A demonstration of controlling custom hardware components in software using a MicroBlaze CPU with IO bus integration to the UART, 7-segment displays, d-pad, toggle switches and LEDs. Provides hardware control via a terminal interface.
+[LogicStart Microcontroller](lsuc/) | A demonstration of controlling custom hardware components in software using a MicroBlaze CPU with IO bus integration to the UART, 7-segment displays, d-pad, toggle switches and LEDs. Provides hardware control via a terminal interface.

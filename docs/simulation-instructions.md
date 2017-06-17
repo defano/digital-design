@@ -1,6 +1,6 @@
 # Simulating a Design
 
-This section describes how to simulate a Verilog design using Icarus Verilog and then view the resulting VCD waveforms in GTKWave.
+This document describes how to simulate a Verilog design using Icarus Verilog and view the resulting VCD waveforms in GTKWave.
 
 ## Prerequisites
 
@@ -16,8 +16,8 @@ Note that each of the sample projects already have Makefiles that will execute t
 
 Simulating a design with Icarus Verilog (and most other modern Verilog simulators, too) is a two-step process:
 
-1. Cross-compiling the Verilog design into an intermediate representation optimized for execution, and
-2. Executing the simulation from the intermediate representation.
+1. Cross-compile the Verilog design into an intermediate representation optimized for execution, and
+2. Execute the simulation from the intermediate representation.
 
 Icarus Verilog provides two command-line tools to achieve this process: `iverilog` and `vvp`.
 
@@ -25,7 +25,7 @@ Icarus Verilog provides two command-line tools to achieve this process: `iverilo
 
 Use the `iverilog` command to compile your Verilog sources (including testbench and/or other test-related sources) into Icarus Verilog's internal representation, called VVP.
 
-For example, the Knight Rider project has one RTL source file (`rtl/knightrider.v`) and one testbench file (`test/testbench.vt`). We would compile this to `simulation.vvp` using the command:
+For example, the Knight Rider project has one RTL source file (`rtl/knightrider.v`) and one testbench file (`test/testbench.vt`). We can compile this to `simulation.vvp` using the command:
 
 ```
 $ iverilog -o simulation.vvp rtl/knightrider.v test/testbench.vt
@@ -33,7 +33,7 @@ $ iverilog -o simulation.vvp rtl/knightrider.v test/testbench.vt
 
 Note that the order of source files is unimportant. The testbench doesn't need be listed last, and there is no special switch or convention to specify which file represents the "top" of the design hierarchy (the tool will figure that out for itself).
 
-Alternately, its possible to use the `-y` switch to tell `iverilog` to use all of the source files it finds in given directory. See the `man` page for details.
+Alternately, its possible to use the `-y` switch to tell `iverilog` to include all of the source files it finds in given directory. See the `man` page for details.
 
 Icarus Verilog will produce no console output (unless it detects an error or warning) and will write the compiled output to `simulation.vvp`. With this, we're ready to execute the simulation.
 
@@ -45,11 +45,11 @@ Use the `vvp` command to execute the simulation produced in the previous step:
 $ vvp simulation.vvp
 ```
 
-The simulation will produce whatever output is created by executing it (i.e., via `$display()` tasks in the testbench) and will stop only when the `$finish` system task is executed or the simulator is stopped manually.
+The simulation will produce whatever output is created by executing it (i.e., via `$display()` system tasks in the testbench) and will stop only when the `$finish` system task is executed or the simulator is stopped manually.
 
 ##### Stopping a simulation
 
-To break out of a running simulation, interrupt the `vvp` process by typing `Ctrl-C` at the console actively executing the simulator. This will produce a simulator prompt, like:
+To escape from a running simulation, interrupt the `vvp` process by typing `Ctrl-C` at the console. This will produce a simulator prompt, like:
 
 ```
 ** VVP Stop(0) **

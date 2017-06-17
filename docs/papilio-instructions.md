@@ -1,14 +1,14 @@
 # Programming the Papilio FPGA with a Circuit Design
 
-This section describes how to a program a Papilio's FPGA with a Xilinx bitstream programming file (`.bit` file).
+This section describes how to a program the Papilio's FPGA with a Xilinx bitstream programming file (`.bit` file).
 
 ## Prerequisites
 
-* A Papilio Pro development board and USB cable (other Papilio boards ought to work, too).
+* A Papilio Pro development board and USB cable.
 
 * A Xilinx programming file (`.bit`), either generated using [these instructions](synthesis-instructions.md), or a pre-built one from the example projects.
 
-* A working copy of the `papilio-prog` tool, including the FTDI USB device drivers ([installation instructions here](install-instructions.md)).
+* A working copy of the `papilio-prog` tool including the FTDI USB device drivers ([installation instructions here](install-instructions.md)).
 
 ## Steps
 
@@ -23,7 +23,7 @@ If you're running Linux in virtualization, you may first need to add a USB port 
 You can grep `dmesg` to verify the USB connection:
 
 ```
-root@ubuntu-vm-i386:# dmesg | grep FTDI
+$ sudo dmesg | grep FTDI
 [ 9715.868915] usb 2-1: Manufacturer: FTDI
 [ 9715.920856] usbserial: USB Serial support registered for FTDI USB Serial Device
 [ 9715.920886] ftdi_sio 2-1:1.0: FTDI USB Serial Device converter detected
@@ -41,7 +41,7 @@ root@ubuntu-vm-i386:# dmesg | grep FTDI
 Use the `papilio-prog -j` command to verify that the programmer can "talk" to the FPGA:
 
 ```
-root@ubuntu-vm-i386:# papilio-prog -j
+$ sudo papilio-prog -j
 Using built-in device list
 JTAG chainpos: 0 Device IDCODE = 0x24001093	Desc: XC6SLX9
 ```
@@ -59,7 +59,7 @@ These can be found in the `/papilio` directory of the sample projects, or in the
 Program the FPGA using the `papilio-prog -f <bitfile>` command:
 
 ```
-root@ubuntu-vm-i386:# papilio-prog -f loopback.bit
+$ sudo papilio-prog -f loopback.bit
 Using built-in device list
 JTAG chainpos: 0 Device IDCODE = 0x24001093	Desc: XC6SLX9
 Created from NCD file: loopback.ncd;UserID=0xFFFFFFFF
@@ -75,5 +75,5 @@ Upon completion, your hardware is ready to go! Do not power-cycle the device aft
 To persist the design across power cycles, the Papilio Pro contains a small flash memory that can store your design and automatically load it on power-up. Use the `-s a` flag to erase, verify and program this flash:
 
 ```
-root@ubuntu-vm-i386:# papilio-prog -s a -f loopback.bit
+$ sudo papilio-prog -s a -f loopback.bit
 ```

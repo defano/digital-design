@@ -1,22 +1,22 @@
 # Implementing a Design for Xilinx Spartan 6
 
-This document describes how to implement a Verilog design on the Papilio Pro's Xilinx Spartan 6 (`xc6slx9-tqg144`) FPGA.
+This document describes how to implement a Verilog design for the Papilio Pro's Xilinx Spartan 6 (`xc6slx9-tqg144`) FPGA.
 
-Note that each of the sample projects provide a Makefile (in their respective `syn/` directories) that will implement the design via the command line (use `$ make bit`). These Makefiles invoke the Xilinx command-line tools in a way that replicates the GUI process described below. See the [Makefile section](#synthesizing-with-make) for more details.
+Note that each of the sample projects (except for the two microcontroller projects) provide a Makefile in their respective `syn/` directories that will implement the design via the command line (use `$ make bit`). These Makefiles invoke the Xilinx command-line tools in a way that replicates the GUI process described below. See the [Makefile section](#synthesizing-with-make) for more details.
 
 ## Prerequisites
 
-* A Papilio Pro (or other hardware containing a Xilinx FPGA)
+* A Papilio Pro (or other hardware containing a Xilinx Spartan-6 XC6SLX9 FPGA)
 
 * A Verilog circuit design (such as any one of the example projects)
 
 * A user constraints file providing a mapping between logic IOs and physical pins on the device. ([See the note about user constraints](#A-note-about-user-constraints))
 
-* Xilinx ISE WebPack software ([installation instructions](install-instructions.md))
+* Xilinx ISE WebPack software (free, see [installation instructions](install-instructions.md))
 
 ## Introduction
 
-Recall that _synthesis_ is the process of converting Verilog's high-level language constructs into a network of flip-flops, logic gates, etc. called a _netlist_.
+Recall that _synthesis_ is the process of converting Verilog's high-level language constructs into a network of flip-flops and logic gates called a _netlist_.
 
 Of course, simply having a netlist representation of our design isn't quite the same as having a real, actual, working chip. There are several additional steps required to create a programming file that can be loaded onto an FPGA. This entire process—from Verilog to programming file—is called _design implementation_. This tutorial will focus on implementing a design on a Xilinx FPGA, but the process is similar for other programmable logic devices (and not all that different for ASICs, either).
 
@@ -38,17 +38,17 @@ Once a bitstream programming file has been generated, it can be loaded on the Pa
 
 #### A note about user constraints
 
-A user constraints file (`.ucf`) is a plain-text file authored by the circuit designer that specifies how top-level inputs and outputs in the design should correspond to physical pins on the FPGA. Without these _constraints_, the toolset will randomly choose pins for you (a behavior that's rarely desired). A variety of additional constraint information may also be provided in this file (extensive documentation is [available here](https://www.xilinx.com/support/documentation/sw_manuals/xilinx11/cgd.pdf)).  
+A user constraints file (`.ucf`) is a plain-text file authored by the circuit designer that specifies how top-level inputs and outputs in the design should correspond to physical pins on the FPGA chip. Without these constraints, the toolset will randomly choose pins for you (a behavior that's almost never desired). A variety of additional constraint information may also be provided in this file (extensive documentation is [available here](https://www.xilinx.com/support/documentation/sw_manuals/xilinx11/cgd.pdf)).  
 
 A generic UCF (`BPC3011-Papilio_Pro-general.ucf`) defining a pin mapping for every logical signal shown on the Papolio Pro's schematic can be found in the top-level `papilio/` directory. Additionally, each of the example projects has its own customized UCF located in the project's `papilio/` subdirectory.
 
 If you create a new project of your own, you should start with a copy of the generic UCF, then:
 
-1. Modify it such that each logical signal name (the value immediately following the `NET` keyword) matches the name of an `input` or `output` in your top-level module. Leave the `LOC` value and other constraints following the `|` symbol unmodified.
+1. Modify it such that each logical signal name (the value immediately following the `NET` keyword) matches the name of an `input` or `output` in your top-level module (case insensitive). Leave the `LOC` value and other constraints following the `|` symbol unmodified.
 
 2. Optionally remove all other (unused) `NET` statements to prevent warnings.
 
-Note that the first four (non-comment) lines of the file should be always be present:
+Note that the first four (non-commented) lines of the file should be always be present:
 
 ```
 ## Prohibit the automatic placement of pins that are connected to VCC or GND for configuration.
@@ -59,13 +59,13 @@ CONFIG PROHIBIT=P60;
 NET CLK            LOC="P94"  | IOSTANDARD=LVTTL | PERIOD=31.25ns;          
 ```
 
-**Use care when authoring this file.** It's important that pins on the FPGA are connected correctly. Incorrect connections may produce short-circuits or other faults that could damage the FPGA or circuit board.
+**Use care when authoring this file:** It's important that pins on the FPGA are connected correctly. Incorrect connections may produce short-circuits or other faults that could damage the FPGA or circuit board.
 
 ## Synthesizing with ISE Design Suite
 
 These instructions describe how to implement a design using Xilinx' ISE Design Suite GUI application.
 
-Note that these instructions assume that you've sourced the Xilinx `settings32.sh` environment setup script (as described in the [setup instructions](install-instructions.md)).
+Note that these instructions assume that you've already sourced the Xilinx `settings32.sh` environment setup script (as described in the [setup instructions](install-instructions.md)).
 
 #### Step 1: Start ISE Design Suite
 
