@@ -72,7 +72,7 @@ $ gtkwave
 
 ### Loading the waveforms
 
-Load the waveform you created in simulation by choosing "File" -> "Open new Tab" and selecting the VCD file. Alternately, you can launch `gtkwave` with a waveform initially loaded by passing the name of the VCD file to `gtkwave` as an argument, like `$gtkwave waveform.vcd`.
+Load the waveform you created in simulation by choosing "File" -> "Open new Tab" and selecting the VCD file. Alternately, you can launch `gtkwave` with a waveform initially loaded by passing the name of the VCD file to `gtkwave` as an argument, like `$ gtkwave waveform.vcd`.
 
 ![GTKWave](images/sim.png)
 

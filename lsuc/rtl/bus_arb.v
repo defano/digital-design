@@ -25,6 +25,13 @@ module bus_arb (
    input         clk;
    input         reset_;
 
+   // Bus controller to distribute MicroBlaze IO bus to our own hardware modules.
+   // This circuit decodes the address bus and generates module-independent
+   // bus control signals to each hardware module (like display, uart, gpio)
+   // and provides a ready timeout function to prevent the CPU from waiting
+   // indefinitely for a response (as would be the case if software tried to
+   // access an unmapped memory location).
+
    // MicroBlaze IO Bus
    input  [31:0] mcs_addr;          // Address from MicroBlaze
    output        mcs_ready;         // Request complete indicator to MicroBlaze
@@ -35,7 +42,7 @@ module bus_arb (
    input  [3:0]  mcs_byte_enable;   // Which byte(s) in 32-bit longword are being accessed
 
    // Local IO Bus
-   output [7:0]  addr;               // Address to lsuc module
+   output [7:0]  addr;              // Address to lsuc module
    output        rnw;               // Read, not write, indicator
    output        req;               // Bus request
    output [7:0]  wr_data;           // Write data to lsuc module
@@ -58,6 +65,7 @@ module bus_arb (
    assign req     = mcs_rd_enable || mcs_wr_enable;
    assign wr_data = mcs_wr_data[7:0];
 
+   // Top-level memory mapping
    assign gpio_cs = mcs_addr[31:28] == 4'hc;    // GPIO module mapped to 0x4000_00xx addresses
    assign disp_cs = mcs_addr[31:28] == 4'hd;    // Display module mapped to 0x4000_00xx addresses
    assign uart_cs = mcs_addr[31:28] == 4'he;    // UART module mapped to 0x4000_00xx addresses

@@ -10,6 +10,28 @@ The Papilio development board contains a dual-port USB serial port (provided by 
 
 The result of this being that we can connect the Papilio to a computer via USB, open a serial communications app (like PuTTY, miniterm or cutecom), send bytes over the USB serial port, and see them echoed back to us. [Detailed instructions below.](#testing-serial-communications)  
 
+#### Overview of RS-232 serial communications
+
+The waveforms below illustrate what RS-232 serial communication looks like "over the wire":
+
+![Waveform](doc/waveform.png)
+
+Signal | Description
+-------|---------------
+`tx`   | Serial data transmitted from the FPGA to the FTDI USB controller chip (an output pin on the FPGA; an input pin on the FTDI). While an `rx` signal is not illustrated, the data format would be identical.
+`baud` | A pulse (the width of a single clock cycle) generated at the baud frequency (115,200 times per second, in this case).
+`txdata` | The byte of data the UART is in the process of serializing and transmitting.
+`txpos` | The position of the bit currently being transmitted. Note that this value appears to precede the transmit data by one baud pulse; that's normal behavior. See if you can figure out why.
+`state` | The state of the transmitter. `2'd0` is idle; `2'd1` is start; `2'd2` is transmit data; and `2'd3` is transmit stop. Like `txpos`, this value appears to precede `tx` by one `baud` pulse.
+
+Lets take a look at what's happening to the transmit output (`tx`) when the transmitter is sending `8'd56`:
+
+* First, take note that changes to the value of `tx` are aligned with `baud`. This is the very definition of baud: The maximum rate at which our transmit data signal can change state.
+* The first high pulse (right above where `txdata` transitions from `55` to `56`) is the last transmission's stop bit. The 1 value provides a delineation between the previous transmissions's stop bit and the beginning this transmission. In this example, we're transmitting bytes back-to-back without any delay. Had there been some period of time between the previous transmission (`55`) and this one (`56`), we'd see that `tx` remains high for the duration of the idle period.
+* Our transmission starts with the 0 value directly following the stop bit. This is considered the "start bit" and delineates the end of the idle period between transmissions.
+* The value of `tx` for the next eight baud pulses represent  each bit of the transmit data starting with the least significant bit (`txdata[0]`) and ending with the most significant bit (`txdata[7]`). In sequence, we see the transmit pattern 0-0-0-1-1-1-0-0 (the bit pattern for decimal 56, LSB to MSB).
+* Finally, we see a 1 value representing our transmission's stop bit. The patterns repeats from here.
+
 #### Testing Serial Communications
 
 The UART implemented in this circuit is intended to communicate with the host PC using these settings:
@@ -19,7 +41,6 @@ The UART implemented in this circuit is intended to communicate with the host PC
 * **Handshaking**: None (neither hardware or software)
 * **Stop Bits**: 1
 * **Data Bits**: 8
-
 
 1. Start by connecting the Papilio to your host computer via USB and loading the `loopback.bit` Xilinx file to it.
 

@@ -13,25 +13,50 @@ module gpio_ctrl (
    rnw,
    wr_data,
    rd_data,
-   rdy);
+   rdy
+);
 
    input        clk;
    input        reset_;
    output [7:0] leds;         // 8 LEDs
-   input  [6:0] switches;     // 7 toggle switches (eighth is tied to reset)
+   input  [6:0] switches;     // 7 toggle switches (eighth is tied to reset_)
    input        up;           // d-pad up
    input        down;         // d-pad down
    input        left;         // d-pad left
    input        right;        // d-pad right
 
+   // This circuit provides general purpose IO control over the switches, LEDs
+   // and d-pad inputs. It provides three software-controllable registers,
+   // described below:
+   //
+   // LED control reg (read/write):
+   //   [7:0]   Each bit in this register corresponds with an LEDs state. A one
+   //           in results in the LED assocaited with the bit position turning
+   //           on. For example, 7'b0100_0110 reults in LEDs 1,2 and 6 on; the
+   //           rest off.
+   //
+   // Switch control reg (read only):
+   //   [6:0]   Returns the state of each toggle switch (switch seven is
+   //           configured as reset).
+   //
+   // D-Pad control reg (read only);
+   //   [7]     A one indicates that up was pressed. Write any value to clear.
+   //   [6]     A one indicates that down was pressed. Write any value to clear.
+   //   [5]     A one indicates that left was pressed. Write any value to clear.
+   //   [4]     A one indicates that right was pressed. Write any value to clear.
+   //   [3]     A one indicates that up was released. Write any value to clear.
+   //   [2]     A one indicates that down was released. Write any value to clear.
+   //   [1]     A one indicates that left was released. Write any value to clear.
+   //   [0]     A one indicates that right was released. Write any value to clear.
+
    // Local IO bus
-   input  [7:0] addr;
-   input        cs;
-   input        req;
-   inout        rnw;
-   input  [7:0] wr_data;
-   output [7:0] rd_data;
-   output       rdy;
+   input  [7:0] addr;       // CPU address
+   input        cs;         // Chip select (when high, request is for this module)
+   input        req;        // CPU request
+   inout        rnw;        // Request is a read, not write.
+   input  [7:0] wr_data;    // Write data from CPU
+   output [7:0] rd_data;    // Read data from this module to CPU
+   output       rdy;        // Ready (request is complete)
 
    reg [7:0]    dpads;
    reg [7:0]    leds;
@@ -174,6 +199,5 @@ module gpio_ctrl (
      .raw(right),
      .debounced(right_debounced)
    );
-
 
 endmodule

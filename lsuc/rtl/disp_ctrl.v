@@ -16,6 +16,20 @@ module disp_ctrl (
    output [6:0] segments_;        // 7-segment display segments (active low)
    output [3:0] digit_enable_;    // Which digit(s) are being controlled
 
+   // This circuit provides software control over the 7-segment displays. Each
+   // display has two control registers, a mode register and a value register.
+   // They work as follows:
+   //
+   // control:
+   //    [0]    When 1, value register is a 7-bit value representing the state
+   //           of each display segment. When 0, value register is interpreted
+   //           as a 4-bit binary coded value (i.e., 4'b1000 displays an '8' on
+   //           on the display).
+   //
+   // value:
+   //    [6:0]  Binary coded value (or raw segment values) to display depedning
+   //           on control register value.
+
    // Local address bus
    input  [7:0] addr;
    input        cs;
@@ -147,7 +161,7 @@ module disp_ctrl (
      .bcd(digit_3_value[3:0])
    );
 
-   // When display mode is 1, the interpret digit value as raw segment enables;
+   // When display mode is 1, we interpret digit value as raw segment enables;
    // otherwise, assume digit value is BCD (display a number between 0..9)
    assign digit_0 = digit_display_mode[0] ? digit_0_value[6:0] : digit_0_segments;
    assign digit_1 = digit_display_mode[1] ? digit_1_value[6:0] : digit_1_segments;

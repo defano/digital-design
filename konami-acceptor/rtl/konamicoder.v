@@ -17,7 +17,6 @@ module konamicoder (
   wire [6:0] digit_2;
   wire [6:0] digit_3;
 
-
   // Least-significant bit is segment 'A', most significant is 'G'
   parameter char_u = 7'b0111110;
   parameter char_p = 7'b1110011;

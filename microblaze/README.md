@@ -6,6 +6,11 @@ This is not a trivial exercise. There are quite a few steps involved and each ha
 
 **You've been warned.** Stick with the script until you've got a good sense of what you're doing...
 
+#### Suggested modifications
+
+* (Easy) Modify the firmware to do something more interesting with LEDs.
+* (Harder) Regenerate the MicroBlaze core with general purpose inputs that sample the value of the LogicStart toggle switches. Modify the firmware to control the LEDs using the corresponding toggle switch (i.e., toggle 0 turns on/off LED 0).
+
 ## Overview
 
 Here are the steps we'll follow to complete our design:

@@ -25,6 +25,9 @@ module lsuc_top (
    output       tx;             // UART transmit (to host computer)
    input        rx;             // UART receive (from host computer)
 
+   // Top-level module for the LogicStart Microcontroller; instantiates all
+   // submodules and connects them together (provides no other logic).
+
    wire         clk;
    wire         reset_;
    wire [31:0]  mcs_addr;
@@ -48,7 +51,7 @@ module lsuc_top (
    wire [7:0]   uart_rd_data;
    wire         uart_rdy;
 
-   // Bus arbiter instantiation ("distributes" MicroBlaze IO bus to local modules)
+   // Bus controller instantiation ("distributes" MicroBlaze IO bus to local modules)
    bus_arb bus_arb (
      .clk(clk),
      .reset_(reset_),

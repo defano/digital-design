@@ -16,6 +16,43 @@ module uart_ctrl (
    output       tx;         // Transmit to host computer
    input        rx;         // Receive from host computer
 
+   // This circuit provides software control over the RS-232 universal asynchronus
+   // receiver/transmitter. It exposes these software accessible registers:
+   //
+   // Transmit byte (read/write):
+   //   [7:0]   Write a value to this register to have it transmitted to the
+   //           host computer. Has no effect if the transmitter is not ready
+   //           at the time the register is written.
+   //
+   // Transmit ready (read):
+   //   [0]     When 1, the transmitter is ready to accept a new byte to be
+   //           transmitted. 0 indicates the transmitter is still busy with a
+   //           previous byte.
+   //
+   // Receive byte (read):
+   //   [7:0]   The last byte received from the host computer.
+   //
+   // Receive byte ready (read/write):
+   //   [0]     1 indicates that the receive byte value is valid and ready to
+   //           be consumed by software. Write any value to this register to
+   //           clear the ready indicator.
+   //
+   // Transmit byte count high (read):
+   //   [7:0]   The high ([15:8]) bits of the number of bytes transmitted to the
+   //           host computer.
+   //
+   // Transmit byte count low (read):
+   //   [7:0]   The low ([8:0]) bits of the number of bytes transmitted to the
+   //           host computer.
+   //
+   // Recieve byte count high (read):
+   //   [7:0]   The high ([15:8]) bits of the number of bytes received from the
+   //           host computer.
+   //
+   // Receive byte count low (read):
+   //   [7:0]   The low ([7:0]) bits of the number of bytes received from the
+   //           host computer.
+
    // Local IO bus
    input  [7:0] addr;
    input        cs;

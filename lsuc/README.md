@@ -11,6 +11,11 @@ Essentially, this is a series of improvements to the last project (Microblaze Mi
 
 Be sure you've successfully completed the Microblaze Microcontroller project and have a good sense of how the pieces fit together before starting this one. The instructions that follow are not as detailed as those in the previous project since many of these steps should now be familiar.
 
+#### Suggested modifications:
+
+* (Easy) The UART transmit and receive count registers cannot be reset in software. Add a mechanism to the reset the counts to 0 from software.
+* (Harder) The UART hardware provides no data buffering; this system is dependent on the software polling the receive byte register faster than the hardware can update it. Build a small circular buffer (a _FIFO_ in hardware terms) that captures up to 16 bytes of received data and exposes this through a few software-accessible control registers. 
+
 ## Overview
 
 Here are the steps we'll follow to complete our design:
