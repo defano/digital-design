@@ -29,5 +29,5 @@ File | Description
 [`rtl/sevensegment.v`](rtl/sevensegment.v) | Top-level circuit module; instantiates four binary coded decimal to seven-segment coders, plus one display driver to multiplex the segment signals.
 [`rtl/bcdcoder.v`](rtl/bcdcoder.v) | Converts a _binary coded decimal_ (BCD) value to the set of segments that should be lit in order to display the number. (BCD is a 3-bit binary value representing the quantities 0..9, and ignoring the remaining bit patterns `3'd10` and `3'd11`.)
 [`rtl/displaydriver.v`](rtl/displaydriver.v) | Circuit that accepts four seven-input segment signals and multiplexes them onto the hardware's single segment/enable bus (driving each character for a fraction of a second).
-[`test/testbench.vt`](test/testbench.vt) | Circuit test bench.
+[`test/testbench.v`](test/testbench.v) | Circuit test bench.
 [`papilio/papilio-pro.ucf`](papilio/papilio-pro.ucf) | User constraints file providing a mapping of logical ports (defined in Verilog) to physical pins on the FPGA.

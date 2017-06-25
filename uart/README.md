@@ -82,5 +82,5 @@ File | Description
 [`rtl/uart.v`](rtl/uart.v) | UART circuit for serializing/deserializing data from the FTDI USB chip.
 [`rtl/tx.v`](rtl/tx.v) | UART transmiter module.
 [`rtl/rx.v`](rtl/rx.v) | UART receiver module.
-[`test/testbench.vt`](test/testbench.vt) | Circuit test bench.
+[`test/testbench.v`](test/testbench.v) | Circuit test bench.
 [`papilio/papilio-pro.ucf`](papilio/papilio-pro.ucf) | User constraints file providing a mapping of logical ports (defined in Verilog) to physical pins on the FPGA.

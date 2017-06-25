@@ -44,5 +44,5 @@ File | Description
 [`rtl/konamiacceptor.v`](rtl/konamiacceptor.v) | Top-level circuit module; implements a state machine that accepts a Konami code input. Instantiates a display character coder and display driver circuit.
 [`rtl/konamicoder.v`](rtl/konamicoder.v) | Converts a state id into the set of segments that should be lit on each seven segment display.
 [`rtl/displaydriver.v`](rtl/displaydriver.v) | Circuit that accepts four seven-input segment signals and multiplexes them onto the hardware's single segment/enable bus (driving each character for a fraction of a second).
-[`test/testbench.vt`](test/testbench.vt) | Circuit test bench.
+[`test/testbench.v`](test/testbench.v) | Circuit test bench.
 [`papilio/papilio-pro.ucf`](papilio/papilio-pro.ucf) | User constraints file providing a mapping of logical ports (defined in Verilog) to physical pins on the FPGA.
