@@ -2,7 +2,7 @@
 all: waveform
 
 MODULES=$(wildcard rtl/*.v)
-TEST=test/testbench.vt
+TEST=test/testbench.v
 
 # Removes all derived sources and files
 clean:

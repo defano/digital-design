@@ -1,6 +1,6 @@
 # Introduction to Digital Design
 
-An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language using open-sourced tools and hardware. This tutorial consists of several hardware designs which can be implemented (synthesized) and loaded onto [GadgetFactory's Papilio](http://papilio.cc) hardware.
+An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language with open-sourced tools and hardware. This tutorial consists of several hardware designs which can be implemented (synthesized) and loaded onto [GadgetFactory's Papilio Pro](http://papilio.cc) hardware.
 
 See the [Introduction to Digital Design](introduction-to-digital-design.pdf) slides from the 2017 Chicago Coder Conference for a refresher on chip design with Verilog.
 
@@ -20,16 +20,18 @@ Install the `papilio-prog` programmer ([instructions here](docs/install-instruct
 
 ## Getting Started
 
-Each of these [example projects](#example-projects) contain Verilog RTL source code; a testbench to provide stimulus to the design and generate simulation waveforms; a synthesis script for translating the design into a gate-level netlist (just for fun--not otherwise used); a user constraints file (`UCF`) defining a mapping of physical pins on the Papilio Pro's FPGA to inputs/outputs in our designs; and a pre-built `.bit` file that can be immediately loaded onto the Papilio Pro without having to run Xilinx' ISE software.
+I find that the best way to learn a new language or technology is to experiment with a working example. Each of the example projects (below) offers a sandbox to play in. Simulate the design; view the waveforms; figure out what's happening; and see if you can make the recommended modifications. You'll be ready to create your own from scratch in no time!
 
-1. [Instructions for installing open source tools](docs/install-instructions.md)
-2. [Instructions for simulating designs and viewing waveforms](docs/simulation-instructions.md)
-3. [Instructions for synthesizing designs for Xilinx chips on the Papilio hardware](docs/synthesis-instructions.md)
-4. [Instructions for loading synthesized designs onto the Papilio board](docs/papilio-instructions.md)
+See each of the instruction guides to learn how to install the toolchain, simulate and synthesize the designs, and load them onto the Papilio development boards:
+
+* [Instructions for installing open source tools](docs/install-instructions.md)
+* [Instructions for simulating designs and viewing waveforms](docs/simulation-instructions.md)
+* [Instructions for synthesizing designs for Xilinx chips on the Papilio hardware](docs/synthesis-instructions.md)
+* [Instructions for loading synthesized designs onto the Papilio board](docs/papilio-instructions.md)
 
 ## Example Projects
 
-I find that the best way to learn a new language or technology is to experiment with a working example. Each of these projects offers a sandbox to play in. Simulate the design; view the waveforms; figure out what's happening; and see if you can make the recommended modifications. You'll be ready to create your own from scratch in no time!
+Each of these projects represents a working design that includes RTL source code, a simulation testbench, a user-constraints file (that provides a mapping of Verilog inputs/outputs to physical pins on the chip), scripts to synthesize the design to hardware, and a pre-built `.bit` programming file that you can load onto the Papilio without having to install or run Xilinx' ISE software.
 
 Projects are listed in ascending order of complexity.
 

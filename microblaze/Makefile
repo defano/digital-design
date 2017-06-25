@@ -2,7 +2,7 @@
 all: simulate
 
 libs    = -y rtl/ -y core/ -y $(XILINX)/verilog/src/simprims -y $(XILINX)/verilog/src/unimacro -y $(XILINX)/verilog/src/unisims
-test    = test/testbench.vt
+test    = test/testbench.v
 bmm     = core/microblaze_mcs_v1_4.bmm
 bd_bmm  = core/microblaze_mcs_v1_4_bd.bmm
 elf     = src/helloworld/Debug/helloworld.elf
