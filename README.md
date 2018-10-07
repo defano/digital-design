@@ -2,7 +2,9 @@
 
 An introduction to designing, simulating and synthesizing digital hardware designs using the Verilog hardware description language with open-sourced tools and hardware. This tutorial consists of several hardware designs which can be implemented (synthesized) and loaded onto [GadgetFactory's Papilio Pro](http://papilio.cc) hardware.
 
-See the [Introduction to Digital Design](introduction-to-digital-design.pdf) slides from the 2017 Chicago Coder Conference for a refresher on chip design with Verilog.
+See the [Introduction to Digital Design](introduction-to-digital-design.pdf) slides from the 2017 Chicago Coder Conference for a refresher on chip design using Verilog.
+
+**Updated** October 2018 with installation instructions for current tools and 64-bit Ubuntu 18.04 (Bionic Beaver).
 
 ## Hardware
 

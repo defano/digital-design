@@ -4,7 +4,7 @@ This document describes how to install the EDA software tools that are needed to
 
 ## Prerequisites
 
-* A computer running 32-bit Ubuntu (i386) physically or in virtualization (via VirtualBox, Parallels, etc). Microsoft Windows should also work, but instructions are targeted at Linux. MacOS cannot be used natively because Xilinx does not provide tooling for the Mac; macOS users are recommended to run Ubuntu in [Parallels Desktop Lite](https://itunes.apple.com/au/app/parallels-desktop-lite/id1085114709?mt=12), free.
+* A computer running Ubuntu 18.04 LTS (i386) physically or in virtualization (via VirtualBox, Parallels, etc). Microsoft Windows should also work, but instructions are targeted at Linux. MacOS cannot be used natively because Xilinx does not provide tooling for the Mac; macOS users are recommended to run Ubuntu in [Parallels Desktop Lite](https://itunes.apple.com/au/app/parallels-desktop-lite/id1085114709?mt=12), free.
 
 All of the design entry and simulation tools will run on Windows, Linux, and Mac OS. Ubuntu or Windows is required when working with the Papilio/Xilinx hardware.
 
@@ -33,8 +33,8 @@ If you do not have a Papilio board (or are interested only in simulating designs
 
 On Ubuntu
 ```
-$ apt update             
-$ apt install verilog
+$ sudo apt update             
+$ sudo apt install verilog
 ```
 
 On Mac OS X
@@ -49,7 +49,7 @@ $ brew install icarus-verilog
 
 On Ubuntu:
 ```
-$ apt install gtkwave
+$ sudo apt install gtkwave
 ```
 
 On Mac OS X:
@@ -77,61 +77,65 @@ $ brew install yosys
 
 ## Xilinx ISE WebPack
 
-**_What's it do?_** Synthesizes Verilog into a format that can be loaded onto the Papilio's Spartan FPGA.
-**_Who needs it?_** Individuals interested in programming Xilinx FPGAs with integrated circuit designs. Useful only if targeting these examples at the Papilio FPGA board. Not required for those without a Papilio or other Xilinx-based development board.
+**_What's it do?_** Synthesizes Verilog into a format that can be programmed into the Papilio's Spartan FPGA.
+**_Who needs it?_** If you intend to realize your Verilog code in hardware form, you need this software. There's no way around it. Skip this tool if you don't own a Papilio or other Spartan 6-based development board (it has no use if you're not targeting your design to these FGPAs).
 
-Note that ISE was EOL'd in 2013 and is no longer supported. It is nonetheless required for designs targeting the older Spartan-family of FPGAs found on the Papilio hardware.
+Note that ISE was EOL'd in 2013 and is no longer actively maintained (although a new build was made available in February, 2018 to support Windows 10). Nevertheless, it's required for hardware designs targeting the older Spartan-family of FPGAs found on the Papilio hardware.
 
-Xilinx makes WebPack available at no cost but the installation process is a hassle. Xilinx requires you to register on their website before downloading the software and then generate and install a license file before using it. Plus, on Linux, you'll need to tweak the installation to prevent library conflicts with modern distributions (a side effect of the software's age and lack of support).
+Xilinx makes WebPack available at no cost, but the installation process is a hassle. Xilinx requires you to register on their website before downloading anything, the download size is _huge_ and then you have to generate and install a license file before using it.
 
 _Xilinx does not offer a macOS version of the software._
 
 #### 1. Download
 
-Download the most recent version (14.7) of the ISE Design tools (full product installation, _all 6 GBs_ of it) from Xilinx's site. [For Linux, here](https://survey.xilinx.com/ss/wsb.dll/Xilinx/ISE_Download_Survey.htm?wsb5=14.7&wsb6=1&wsb7=Xilinx_ISE_DS_Lin_14.7_1015_1.tar) and [for Windows, here](https://survey.xilinx.com/ss/wsb.dll/Xilinx/ISE_Download_Survey.htm?wsb5=14.7&wsb6=1&wsb7=Xilinx_ISE_DS_Win_14.7_1015_1.tar). Note that you will have to fill out a survey and accept EULA terms to download.
+Download the most recent version (14.7) of the ISE Design tools (full product installation, _all 6 GBs_ of it) from Xilinx's site. [For Windows, here](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/design-tools.html) and [for Linux, here](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/design-tools/v2012_4---14_7.html). Find the "Full Installer for Linux" (or Windows) link and download it. If you have trouble downloading such a large file, you can download the installer broken into four segments (approximately 2GB each).
+
+Note that you will have to create an Xilinx account and fill out a "US Government Export Approval" survey in order to download.
 
 #### 2. Install
 
 Windows users can execute the installer tool; Linux users should follow the instructions below:
 
-  1. Un-tar the download; `cd` into Xilinx directory; run `xsetup` as superuser.
-  2. When prompted for which suite of tools to install, choose **ISE WebPack** (note that this is not the default selection)
-  3. Allow tools to be installed into the (default) `/opt/Xilinx` directory.
+  1. Un-tar the download (`tar -xvf <filename>`). If you've downloaded the segmented installer, be sure to have downloaded the other three segments but leave them intact (they should end in `.zip.xz`; don't try to untar or unzip these).
+  2. Navigate into the un-tarred Xilinx directory, then run `xsetup` as superuser (`sudo ./xsetup`).
+  2. When prompted for which suite of tools to install, choose **ISE WebPack** (note that this is not the default selection). Leave all other installation options as their default, and allow the tools to be installed into the (default) `/opt/Xilinx` directory.
 
 #### 3. Fix the libraries (Linux)
 
-Disable obsolete versions of the C standard library to prevent issues with other tools (this will be required to get a license in the next section):
+ISE ships with an old version of the C Standard Library and installs it into your `LD_LOAD_LIBRARY` path. This will prevent most every other Linux tool from running in a shell that sources Xilinx's `settings.sh` scripts (as described below).
+
+Disable obsolete versions of the C standard library to prevent issues with other tools:
 
 ```
-sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/common/lib/lin/libstdc++.so.6.0.8.disable
-
-# These can be ignored if running Fedora
-sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.disable
-sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin/libstdc++.so.6.0.8.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin64/libstdc++.so /opt/Xilinx/14.7/ISE_DS/common/lib/lin64/libstdc++.so.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin64/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/common/lib/lin64/libstdc++.so.6.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/common/lib/lin64/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/common/lib/lin64/libstdc++.so.6.0.8.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin64/libstdc++.so /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin64/libstdc++.so.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin64/libstdc++.so.6 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin64/libstdc++.so.6.disable
+sudo mv /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin64/libstdc++.so.6.0.8 /opt/Xilinx/14.7/ISE_DS/ISE/lib/lin64/libstdc++.so.6.0.8.disable
 ```
 
 #### 4. Fire it up
 
-As noted in the installation wizard, you must source a shell script (to configure your path, environmental variables and whatnot) prior to running ISE WebPack.
+As noted in the installation wizard, you must source a shell script to configure your path, environmental variables and whatnot prior to running ISE WebPack.
 
-For Ubuntu users, this is as simple as:
+For 64-bit Ubuntu users, this is as simple as:
 
 ```
-$ source /opt/Xilinx/14.7/ISE_DS/settings32.sh
+$ source /opt/Xilinx/14.7/ISE_DS/settings64.sh
 ```
 
-Then, fire-up the Design Suite software:
+I find it convenient to source this settings file from my login script. Various Makefiles and instructions found in these tutorials assume that this script has been sourced prior to executing any Xilinx-related instructions. Add this your `.bashrc` file by executing this command:
+
+```
+echo 'source /opt/Xilinx/14.7/ISE_DS/settings64.sh > /dev/null' >> ~/.bashrc
+```
+
+Finally, you're ready to fire-up the ISE Design Suite software (but do not run as superuser):
 
 ```
 $ ise
 ```
-
-Do not run ISE as superuser (various functions will not work).
-
-I find it convenient to source `settings32.sh` from my login script (i.e., `~/.bashrc`). Various Makefiles and instructions found in these tutorials assume that this script has been sourced prior to executing any Xilinx-related instructions.
 
 #### 5. Get a license
 
@@ -140,10 +144,9 @@ The first time you run ISE you'll be prompted to install a feature license. Foll
 1. Click the "Acquire a License" tab
 2. Select the "Get free Vivado/ISE WebPack License" radio button
 3. Click "Next"
-4. A dialog will appear showing local system information; click "Connect Now".
-5. Firefox should open a Xilinx licensing page. If Firefox does not launch (and the "Connect Now" button seems to have no effect but dismissing the dialog), check the console output in the terminal you used to launch the software. More likely than not, you still have a library conflict preventing Firefox from opening. Revisit the _Fix the Libraries_ step above.
-6. Complete the Xilinx license questionnaire.
-7. The license file should be emailed to you; when you receive it, return to the Xilinx License Configuration Manager, click the "Manage Licenses" tab; click the "Load License..." button and navigate to the `.lic` file you received in email. Voila! You're ready to go!
+4. A dialog will appear showing local system information; click "Save Information". Save the `Xilinx_Connect_Later.html` file to your filesystem.
+5. Open the `Xilinx_Connect_Later.html` file with a web browser and complete the Xilinx registration and license request (there is no cost for this license but you do have to provide contact information and assure you're complying with applicable export laws).
+7. The license file will be emailed to you. When you receive it, return to the Xilinx License Configuration Manager, click the "Manage Licenses" tab; click the "Load License..." button and navigate to the `.lic` file you received in email. Voila! You're ready to go!
 
 ## Papilio Loader
 
