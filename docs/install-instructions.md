@@ -4,11 +4,9 @@ This document describes how to install the EDA software tools that are needed to
 
 ## Prerequisites
 
-* A computer running Ubuntu 18.04 LTS (i386) physically or in virtualization (via VirtualBox, Parallels, etc). Microsoft Windows should also work, but instructions are targeted at Linux. MacOS cannot be used natively because Xilinx does not provide tooling for the Mac; macOS users are recommended to run Ubuntu in [Parallels Desktop Lite](https://itunes.apple.com/au/app/parallels-desktop-lite/id1085114709?mt=12), free.
+* A computer running 64-bit Ubuntu 18.04 LTS physically or in virtualization (via VirtualBox, Parallels, etc). Microsoft Windows should also work, but instructions are targeted at Linux. MacOS cannot be used natively because Xilinx does not provide tooling for the Mac; macOS users are recommended to run Ubuntu in [Parallels Desktop Lite](https://itunes.apple.com/au/app/parallels-desktop-lite/id1085114709?mt=12), free.
 
 All of the design entry and simulation tools will run on Windows, Linux, and Mac OS. Ubuntu or Windows is required when working with the Papilio/Xilinx hardware.
-
-This tutorial is aimed at 32-bit Ubuntu Linux users (specifically _i386 Ubuntu 17.04 (Zesty Zapus) Desktop_). Other 32-bit versions of Linux should work equally well. Ubuntu can be virtualized on Mac OS X or Windows through use of VirtualBox or other tools. I have had issues getting the Papilio software to run correctly on 64-bit versions of Ubuntu. **If you plan on using the Papilio hardware and toolset, I recommend using an i386 version of Ubuntu Desktop such as [this one](http://releases.ubuntu.com/17.04/ubuntu-17.04-desktop-i386.iso).**
 
 ## What to Install?
 
