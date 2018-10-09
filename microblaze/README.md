@@ -24,65 +24,46 @@ Here are the steps we'll follow to complete our design:
 
 ## Setup
 
-There are a couple problems with our toolset that we need to resolve before getting started:
+We'll use Xilinx's software development kit to create firmware for our system-on-a-chip. Unfortunately, there are a couple problems running these tools on modern Ubuntu. Perform these steps before getting started:
 
-#### Link `gmake` to `make`
+#### 1. Link `gmake` to `make`
 
 The Xilinx software development kit (`xsdk`) that we'll be using expects to be able to call `gmake` (GNU Make) instead of the system `make`. For Ubuntu, the difference is irrelevant and the problem is easily solved with a link:
+
 ```
 $ sudo ln -s /usr/bin/make /usr/bin/gmake
 ```
 
-#### Check for a buggy iVerilog
+#### 2. Install 32-bit (i386) libraries
 
-Versions of Icarus Verilog older than 10.x contain a bug that prevents it from simulating Xilinx' block memory models. (This issue would not have manifested itself in earlier tutorials.) Check the version of `iverilog` before continuing (by inspecting the first line of the `man` page, `$ man iverilog`).
+Cross-compiling our firmware on a 64-bit Linux system requires that we install some additional libraries before we get started. If you skip this step, you'll find that `xsdk` produces compile errors like `/bin/sh: mb-gcc: not found`.
 
-If you've got an old version of `iverilog` you can attempt to upgrade with `sudo apt upgrade`. If your package manager isn't able to install Icarus Verilog 10 or better, you can manually build and install the tool from source:
-
-1. Download the source code by navigating to a directory where you'd like to store it, then:
 ```
-$ git clone https://github.com/steveicarus/iverilog.git
-```
-
-2. Change into the `iverilog` directory that was created by checking out the source:
-```
-$ cd iverilog
-```
-
-3. Build and run the configuration scripts:
-```
-$ sh autoconf.sh
-$ ./configure
-```
-
-4. Compile the software, being aware that your compile will likely fail as a result of various tools being absent on your Ubuntu build (stuff like `bison` and `flex`). You can easily remedy these errors by installing the tool each time your reach an error. For example: `sudo apt install bison`.
-```
-$ make
-```
-
-5. When the compile has succeeded, install the binaries with:
-```
-$ sudo make install
+$ sudo dpkg --add-architecture i386
+$ sudo apt-get install libstdc++5:i386
+$ sudo apt-get install lib32z1
 ```
 
 ## Create the MicroBlaze Core
 
 A _core_ is the integrated circuit equivalent of a library in software. That is, it's a black box circuit developed by a third party which we instantiate and use inside our own circuit without regard for the implementation details. It's IO port definition is, essentially, its API.
 
-Unlike software libraries, Xilinx' cores are not one-size-fits-all; we don't simply include them in our project. They are configured specifically for our use then dynamically generated using the "Xilinx Core Generator" tool.
+Unlike software libraries, Xilinx' cores are not one-size-fits-all; we don't simply include them in our project. They are configured specifically for our use, then dynamically generated using the "Xilinx Core Generator" tool.
 
-[MicroBlaze](https://en.wikipedia.org/wiki/MicroBlaze) is a microprocessor design from Xilinx that is "easily" incorporated into an FPGA and even includes a simulation model that will let us simulate our design and watch the execution of our firmware. Note, however, that unlike the other Verilog RTL we've used in previous projects, this Verilog is intended purely for simulation. The code contained within is _not_ synthesizable and is _not_ used when generating the FPGA programming file. (Xilinx uses some "secret sauce" unrelated to Verilog to instantiate the MicroBlaze inside the FPGA.)
+[MicroBlaze](https://en.wikipedia.org/wiki/MicroBlaze) is a microprocessor design from Xilinx that is "easily" incorporated into an FPGA and even includes a simulation model that will let us simulate our design and watch the execution of our firmware. Note, however, that unlike the other Verilog RTL we've used in previous projects, this Verilog "simulation model" is just that: It's useful only for simulation. The Verilog contained within is _not_ synthesizable, which might lead you to ask, "Well, then how does this MicroBlaze circuit wind up in my FPGA?" The answer is that Xilinx uses some "secret sauce" (outside the normal synthesis process we've described) in its toolchain to instantiate the MicroBlaze core inside the FPGA. This assures that if you ever choose to utilize a MicroBlaze CPU in your next gazillion-dollar product design, you'll have no choice but to source all your FPGA chips from Xilinx. Clever lads!
+
+Let's get started:
 
 1. Open the Xilinx `coregen` tool with `$ coregen`. If it seems that command doesn't exist (or isn't in your path) then you likely haven't installed Xilinx ISE Webpack or sourced the setup shell script described in the software setup instructions. Otherwise, you should momentarily be presented with this screen:
 <br><br>![Coregen](doc/coregen/1.png)
 
-2. Create a new project by choosing "File" -> "New Project" from the menubar. Create the new project inside the `core` directory of this tutorial. Use the default project name: `coregen`.
+2. Create a new project by choosing "File" -> "New Project" from the menubar. Create the new project inside the `core` directory of this tutorial. Name the project `coregen`.
 
 3. You'll be prompted to select "Project Options". These define the type of FPGA we're targeting and some selections about how we'd like the simulation model built. Enter these options exactly as shown (no changes required to the "Advanced" section):
 <br><br>![Part Options](doc/coregen/2.png)
 <br><br>![Generation Options](doc/coregen/3.png)
 
-4. Close the project options by clicking "OK", then find the MicroBlaze core within the available library of Xilinx-provided cores. Fastest way to do this is to type `microblaze` into the "Search IP Catalog" field.
+4. Close the project options by clicking "OK", then find the MicroBlaze core within the available library of Xilinx-provided cores. The fastest way to do this is to type `microblaze` into the "Search IP Catalog" field.
 
 5. Double-click on the "MicroBlaze MCS 1.4" element in the library tree. This will display the core's configuration options. Enter these options _exactly_ as shown (paying close attention to the change in input clock frequency, memory size and enabling the trace bus):
 <br><br>![MCS Options](doc/coregen/4.png)
@@ -190,11 +171,13 @@ Want further proof that things are working? Open the generated waveform (`$ gtkw
 
 ![Waveform](doc/sim/1.png)
 
-#### Simulating the MicroBlaze model
+### How to simulate the MicroBlaze model
+
+_As noted above, you can simulate your design by simply invoking `make`. These instructions provide clarity for what's happening under the hood inside the Makefile._
 
 The MicroBlaze simulation model (`core/microblaze_mcs_v1_4.v`) that was generated by the `coregen` tool is "structural" in nature; that is, rather than describing the CPU's behavior in straight RTL terms (i.e., with `assign` and `always@` statements), it defines the CPU in terms of other components (called _cells_) that are part of Xilinx' library. We need to make these cells available to Icarus Verilog in order for it to simulate.
 
-There are three Xilinx cell library directories that must pass to `iverilog` when we invoke the simulator (using the `-y` command line switch):
+There are three Xilinx cell library directories that we must pass to `iverilog` when we invoke the simulator (using the `-y` command line switch):
 
 * `-y $(XILINX)/verilog/src/simprims`
 * `-y $(XILINX)/verilog/src/unimacro`
@@ -206,7 +189,7 @@ Finally, there's a bit of "global" logic that's required to initialize/reset Xil
 
 #### Initializing memory with our code
 
-In order to run a simulation of our firmware executing on the MicroBlaze CPU, we have to load our code into memory. Xilinx' BRAM memory models are designed to do just this. At the start of the simulation, they will attempt to initialize themselves by loading data from `.mem` files (an industry standard for describing the contents of a memory).
+In order to simulate our firmware running on the MicroBlaze CPU, we have to first load the firmware into memory. Xilinx' BRAM memory models are designed to do just this. At the start of the simulation, they will attempt to initialize themselves by loading data from `.mem` files (an industry standard for describing the contents of a memory).
 
 Xilinx provides a tool called `data2mem` that will convert our compiled firmware from [ELF format](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) to `.mem`, named in the convention expected by the memory models. Executing `make memory` (a subtask of `simulate`) will generate these files in the root directory of the tutorial.
 
@@ -215,6 +198,8 @@ When we're ready to program our FPGA with this design, we will use the same tool
 ## Synthesize the design
 
 Now that we've proven the correctness of our design through simulation, we're ready to synthesize it into a Xilinx `.bit` file. This procedure is largely identical to the synthesis process used for other projects. (Refer to the [synthesis instructions](../docs/synthesis-instructions.md) for more detailed instructions.)
+
+This project does not have a synthesis Makefile; you'll have to execute ISE manually to synthesize the project:
 
 1. Create a new ISE project in the root directory of this project (`microblaze/ise`). As always, be sure to configure the project with the correct Spartan 6 part properties (part `xc6slx9`, package `tqg144`, speed grade `-2`).
 
