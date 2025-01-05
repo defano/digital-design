@@ -6,6 +6,8 @@ See the [Introduction to Digital Design](introduction-to-digital-design.pdf) sli
 
 **Updated** October 2018 with installation instructions for current tools and 64-bit Ubuntu 18.04 (Bionic Beaver).
 
+**Updated** January 2025 with a few updates to installation instructions. Note that GadgetFactory has shuttered and that the Papilio hardware is sadly no longer for sale. Alchitry Au (or Cu) with the SparkFun Qwiic Connect System offers a modern alternative to Papilio. While the general concepts described here are very much transferrable to Alchitry or other FPGA hobbyist tools, they will not work verbatim. 
+
 ## Hardware
 
 No special hardware is needed to simulate circuit designs, but to fully realize your work in electronic form you'll want your own [Papilio Pro](http://papilio.cc/index.php?n=Papilio.PapilioPro) and [Papilio LogicStart Megawing](http://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) development boards. I recommend purchasing them together as a kit [for about $100.00 online](http://store.gadgetfactory.net/logicstart-megawing-papilio-bundle/).

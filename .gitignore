@@ -6,3 +6,5 @@
 
 lsuc/src/firmware/Debug/*
 
+**/gen
+*.vcd
